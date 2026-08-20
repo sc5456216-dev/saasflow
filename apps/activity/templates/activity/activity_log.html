@@ -1,0 +1,50 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Activity Log</h1>
+        <a href="/admin/" class="btn-secondary">← Admin Panel</a>
+    </div>
+    
+    <div class="activity-card">
+        <table class="activity-table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Description</th>
+                    <th>IP Address</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                    <tr>
+                        <td>{{ log.user.username|default:"Anonymous" }}</td>
+                        <td><span class="badge">{{ log.get_action_display }}</span></td>
+                        <td>{{ log.description|default:"-" }}</td>
+                        <td>{{ log.ip_address|default:"-" }}</td>
+                        <td>{{ log.created_at|date:"M d, Y H:i" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" style="text-align: center;">No activity logs found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .dashboard-container { max-width: 1200px; margin: 100px auto 40px; padding: 0 20px; }
+    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .activity-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow-x: auto; }
+    .activity-table { width: 100%; border-collapse: collapse; }
+    .activity-table th, .activity-table td { padding: 12px; text-align: left; border-bottom: 1px solid #e0e0e0; }
+    .activity-table th { background: #f8f9fa; font-weight: 600; }
+    .badge { display: inline-block; padding: 4px 12px; background: #667eea; color: white; border-radius: 20px; font-size: 12px; }
+    .btn-secondary { padding: 10px 20px; background: #6c757d; color: white; text-decoration: none; border-radius: 8px; }
+    .btn-secondary:hover { background: #5a6268; }
+</style>
+{% endblock %}

@@ -1,0 +1,299 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SaaSFlow - Modern SaaS Platform</title>
+    <style>
+        /* Reset & Base */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1a1a2e; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Header */
+        header { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; width: 100%; top: 0; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
+        .logo { font-size: 24px; font-weight: 700; color: #667eea; text-decoration: none; }
+        .logo span { color: #764ba2; }
+        nav a { color: #555; text-decoration: none; margin-left: 30px; font-size: 14px; font-weight: 500; transition: color 0.3s; }
+        nav a:hover { color: #667eea; }
+        .btn-nav { background: #667eea; color: white !important; padding: 10px 25px; border-radius: 8px; }
+        .btn-nav:hover { background: #764ba2; }
+
+        /* Hero Section */
+        .hero { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 160px 0 100px; 
+            text-align: center; 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+        }
+        .hero h1 { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+        .hero h1 span { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 20px; opacity: 0.9; max-width: 600px; margin: 0 auto 40px; }
+        .hero-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .btn-primary { background: white; color: #667eea; padding: 16px 40px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 18px; transition: transform 0.3s, box-shadow 0.3s; display: inline-block; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .btn-secondary { background: transparent; color: white; padding: 16px 40px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 18px; border: 2px solid white; transition: all 0.3s; display: inline-block; }
+        .btn-secondary:hover { background: white; color: #667eea; }
+
+        /* Stats */
+        .stats { display: flex; justify-content: center; gap: 80px; margin-top: 60px; flex-wrap: wrap; }
+        .stat-item { text-align: center; }
+        .stat-number { font-size: 40px; font-weight: 800; }
+        .stat-label { font-size: 14px; opacity: 0.8; }
+
+        /* Features */
+        .features { padding: 100px 0; background: #f8f9ff; }
+        .section-title { text-align: center; font-size: 40px; font-weight: 700; margin-bottom: 15px; }
+        .section-subtitle { text-align: center; color: #666; font-size: 18px; max-width: 600px; margin: 0 auto 60px; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .feature-card { 
+            background: white; 
+            padding: 40px 30px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
+            transition: transform 0.3s, box-shadow 0.3s; 
+            text-align: center; 
+        }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(102, 126, 234, 0.15); }
+        .feature-icon { font-size: 48px; margin-bottom: 20px; }
+        .feature-card h3 { font-size: 20px; margin-bottom: 10px; }
+        .feature-card p { color: #666; font-size: 15px; }
+
+        /* Pricing */
+        .pricing { padding: 100px 0; background: white; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; align-items: stretch; }
+        .pricing-card { 
+            background: white; 
+            padding: 40px 30px; 
+            border-radius: 16px; 
+            border: 1px solid #e0e0e0; 
+            text-align: center; 
+            transition: transform 0.3s, box-shadow 0.3s; 
+        }
+        .pricing-card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+        .pricing-card.popular { border: 2px solid #667eea; position: relative; }
+        .popular-badge { background: #667eea; color: white; padding: 5px 20px; border-radius: 20px; font-size: 12px; font-weight: 600; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); }
+        .pricing-card .price { font-size: 48px; font-weight: 800; margin: 20px 0; }
+        .pricing-card .price span { font-size: 18px; font-weight: 400; color: #666; }
+        .pricing-card ul { list-style: none; padding: 0; margin: 30px 0; text-align: left; }
+        .pricing-card ul li { padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+        .pricing-card ul li:before { content: "✓ "; color: #667eea; font-weight: 700; }
+        .btn-pricing { display: inline-block; padding: 14px 40px; border-radius: 50px; text-decoration: none; font-weight: 600; transition: all 0.3s; width: 100%; }
+        .btn-pricing-primary { background: #667eea; color: white; }
+        .btn-pricing-primary:hover { background: #764ba2; }
+        .btn-pricing-secondary { background: #f0f0f0; color: #333; }
+        .btn-pricing-secondary:hover { background: #e0e0e0; }
+
+        /* CTA Section */
+        .cta { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 100px 0; 
+            text-align: center; 
+        }
+        .cta h2 { font-size: 40px; margin-bottom: 20px; }
+        .cta p { font-size: 18px; opacity: 0.9; margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+        /* Footer */
+        footer { background: #1a1a2e; color: white; padding: 60px 0 30px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+        .footer-brand .logo { color: white; }
+        .footer-brand .logo span { color: #667eea; }
+        .footer-brand p { color: #aaa; margin-top: 15px; max-width: 300px; }
+        .footer-links h4 { margin-bottom: 15px; }
+        .footer-links a { display: block; color: #aaa; text-decoration: none; margin-bottom: 10px; transition: color 0.3s; }
+        .footer-links a:hover { color: white; }
+        .footer-bottom { border-top: 1px solid #333; padding-top: 20px; text-align: center; color: #666; font-size: 14px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .hero p { font-size: 16px; }
+            .stats { gap: 30px; }
+            .stat-number { font-size: 28px; }
+            .footer-grid { grid-template-columns: 1fr; }
+            nav a { margin-left: 15px; font-size: 12px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .pricing-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+    <div class="container header-content">
+        <a href="/" class="logo">SaaS<span>Flow</span></a>
+        <nav>
+            <a href="#features">Features</a>
+            <a href="#pricing">Pricing</a>
+            <a href="/admin/">Admin</a>
+            <a href="/api/">API</a>
+            <a href="#" class="btn-nav">Get Started</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1>Build Your SaaS <br><span>Faster & Smarter</span></h1>
+        <p>Launch your SaaS product with a modern, scalable, and production-ready Django application.</p>
+        <div class="hero-buttons">
+            <a href="#" class="btn-primary">🚀 Start Free Trial</a>
+            <a href="#features" class="btn-secondary">View Features</a>
+        </div>
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">5K+</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">99.9%</div>
+                <div class="stat-label">Uptime</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Support</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features" id="features">
+    <div class="container">
+        <h2 class="section-title">Everything You Need</h2>
+        <p class="section-subtitle">Modern features to help you build and scale your SaaS product</p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Lightning Fast</h3>
+                <p>Built with Django and PostgreSQL for optimal performance and scalability.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Secure & Reliable</h3>
+                <p>Enterprise-grade security with SSL, authentication, and data protection.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🚀</div>
+                <h3>Docker Ready</h3>
+                <p>Fully containerized with Docker and Docker Compose for easy deployment.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💳</div>
+                <h3>Payment Ready</h3>
+                <p>Stripe integration ready for subscription and payment processing.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Mobile Friendly</h3>
+                <p>Fully responsive design that works on all devices and screen sizes.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Analytics Dashboard</h3>
+                <p>Built-in analytics and reporting to track your business metrics.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Section -->
+<section class="pricing" id="pricing">
+    <div class="container">
+        <h2 class="section-title">Simple Pricing</h2>
+        <p class="section-subtitle">Choose the plan that fits your business needs</p>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Starter</h3>
+                <div class="price"> <span>/mo</span></div>
+                <ul>
+                    <li>5 Team Members</li>
+                    <li>10 Projects</li>
+                    <li>Basic Analytics</li>
+                    <li>Email Support</li>
+                </ul>
+                <a href="#" class="btn-pricing btn-pricing-secondary">Get Started</a>
+            </div>
+            <div class="pricing-card popular">
+                <div class="popular-badge">Popular</div>
+                <h3>Professional</h3>
+                <div class="price"> <span>/mo</span></div>
+                <ul>
+                    <li>20 Team Members</li>
+                    <li>Unlimited Projects</li>
+                    <li>Advanced Analytics</li>
+                    <li>Priority Support</li>
+                    <li>API Access</li>
+                </ul>
+                <a href="#" class="btn-pricing btn-pricing-primary">Get Started</a>
+            </div>
+            <div class="pricing-card">
+                <h3>Enterprise</h3>
+                <div class="price"> <span>/mo</span></div>
+                <ul>
+                    <li>Unlimited Team</li>
+                    <li>Unlimited Projects</li>
+                    <li>Custom Analytics</li>
+                    <li>24/7 Phone Support</li>
+                    <li>Dedicated Account</li>
+                </ul>
+                <a href="#" class="btn-pricing btn-pricing-secondary">Contact Sales</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta">
+    <div class="container">
+        <h2>Ready to Get Started?</h2>
+        <p>Join thousands of companies building their SaaS products with SaaSFlow.</p>
+        <a href="#" class="btn-primary" style="background: white; color: #667eea;">Start Free Trial →</a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="/" class="logo">SaaS<span>Flow</span></a>
+                <p>Modern SaaS platform built with Django, PostgreSQL, and Docker.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Product</h4>
+                <a href="#features">Features</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#">Integrations</a>
+                <a href="#">Changelog</a>
+            </div>
+            <div class="footer-links">
+                <h4>Company</h4>
+                <a href="#">About</a>
+                <a href="#">Blog</a>
+                <a href="#">Careers</a>
+                <a href="#">Contact</a>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">Security</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 SaaSFlow. All rights reserved. Built with ❤️ in Nepal.
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Welcome, {{ user.username }}!</h1>
+        <div>
+            <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+        </div>
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Total Revenue</p>
+            <p class="text-2xl font-bold text-[#667eea]">,430</p>
+            <span class="text-green-500 text-sm">↑ 12.5%</span>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Active Users</p>
+            <p class="text-2xl font-bold dark:text-white">1,284</p>
+            <span class="text-green-500 text-sm">↑ 8.2%</span>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Subscriptions</p>
+            <p class="text-2xl font-bold dark:text-white">842</p>
+            <span class="text-green-500 text-sm">↑ 15.3%</span>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Churn Rate</p>
+            <p class="text-2xl font-bold dark:text-white">2.4%</p>
+            <span class="text-red-500 text-sm">↓ 0.8%</span>
+        </div>
+    </div>
+    
+    <div class="dashboard-grid">
+        <div class="dashboard-card dark:bg-gray-800 dark:border-gray-700">
+            <h3 class="dark:text-white">🏢 Company</h3>
+            {% if company %}
+                <p class="dark:text-gray-300"><strong class="dark:text-white">{{ company.name }}</strong></p>
+                <p class="dark:text-gray-300">Status: {% if company.is_active %}✅ Active{% else %}❌ Inactive{% endif %}</p>
+                <p class="dark:text-gray-300">Website: {{ company.website|default:"Not set" }}</p>
+                <a href="#" class="btn-primary" style="display: inline-block; padding: 10px 20px; background: #6c757d; color: white; text-decoration: none; border-radius: 8px; margin-top: 10px; font-size: 14px;">Edit Company</a>
+            {% else %}
+                <p class="dark:text-gray-300">No company profile yet.</p>
+                <a href="{% url 'create_company' %}" class="btn-primary">Create Company</a>
+            {% endif %}
+        </div>
+        
+        <div class="dashboard-card dark:bg-gray-800 dark:border-gray-700">
+            <h3 class="dark:text-white">📊 Subscription</h3>
+            {% if subscription %}
+                <p class="dark:text-gray-300">Plan: <strong class="dark:text-white">{{ subscription.get_plan_display }}</strong></p>
+                <p class="dark:text-gray-300">Status: {{ subscription.get_status_display }}</p>
+                <p class="dark:text-gray-300">Started: {{ subscription.start_date|date:"M d, Y" }}</p>
+                <p class="dark:text-gray-300">Auto Renew: {% if subscription.auto_renew %}✅ Yes{% else %}❌ No{% endif %}</p>
+                <a href="{% url 'plans' %}" class="btn-primary" style="display: inline-block; padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 8px; margin-top: 10px; font-size: 14px;">Change Plan</a>
+            {% else %}
+                <p class="dark:text-gray-300">No active subscription.</p>
+                <a href="{% url 'plans' %}" class="btn-primary">View Plans</a>
+            {% endif %}
+        </div>
+        
+        <div class="dashboard-card dark:bg-gray-800 dark:border-gray-700">
+            <h3 class="dark:text-white">📈 Usage</h3>
+            <p class="dark:text-gray-300">Projects: 0</p>
+            <p class="dark:text-gray-300">Team Members: 1</p>
+            <p class="dark:text-gray-300">Storage: 0% used</p>
+        </div>
+        
+        <div class="dashboard-card dark:bg-gray-800 dark:border-gray-700">
+            <h3 class="dark:text-white">⚡ Quick Actions</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li><a href="/admin/" class="dark:text-[#667eea]">🔧 Admin Panel</a></li>
+                <li><a href="{% url 'team_list' %}" class="dark:text-[#667eea]">👥 Manage Teams</a></li>
+                <li><a href="{% url 'billing' %}" class="dark:text-[#667eea]">💳 Billing History</a></li>
+                <li><a href="{% url 'create_company' %}" class="dark:text-[#667eea]">🏢 Create Company</a></li>
+                <li><a href="{% url 'plans' %}" class="dark:text-[#667eea]">💰 View Plans</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dashboard-container { max-width: 1200px; margin: 100px auto 40px; padding: 0 20px; }
+    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
+    .dashboard-header h1 { font-size: 32px; }
+    .btn-logout { padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 8px; transition: background 0.3s; }
+    .btn-logout:hover { background: #c82333; }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .dashboard-card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; transition: transform 0.2s; }
+    .dashboard-card:hover { transform: translateY(-2px); }
+    .dashboard-card h3 { margin-bottom: 15px; color: #333; }
+    .dashboard-card p { margin: 8px 0; color: #555; }
+    .dashboard-card .btn-primary { display: inline-block; padding: 10px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; margin-top: 10px; font-size: 14px; border: none; cursor: pointer; transition: background 0.3s; }
+    .dashboard-card .btn-primary:hover { background: #764ba2; }
+    .dashboard-card ul li { margin: 10px 0; }
+    .dashboard-card ul li a { color: #667eea; text-decoration: none; transition: color 0.3s; }
+    .dashboard-card ul li a:hover { text-decoration: underline; color: #764ba2; }
+    .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; }
+    .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+    
+    .dark .dashboard-card { background: #1e1e32; border-color: #2d2d44; }
+    .dark .dashboard-card h3 { color: #e0e0e0; }
+    .dark .dashboard-card p { color: #b0b0c0; }
+    .dark .dashboard-card ul li a { color: #667eea; }
+    .dark .dashboard-card ul li a:hover { color: #764ba2; }
+    .dark .dashboard-header h1 { color: #e0e0e0; }
+    
+    @media (max-width: 768px) {
+        .dashboard-header { flex-direction: column; align-items: flex-start; }
+        .dashboard-header h1 { font-size: 24px; }
+        .dashboard-grid { grid-template-columns: 1fr; }
+        .grid-cols-1.md\:grid-cols-4 { grid-template-columns: 1fr 1fr; }
+    }
+    
+    @media (max-width: 480px) {
+        .grid-cols-1.md\:grid-cols-4 { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}

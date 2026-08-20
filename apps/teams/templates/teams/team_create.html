@@ -1,0 +1,50 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Create Team</h1>
+        <a href="{% url 'team_list' %}" class="btn-secondary">← Back to Teams</a>
+    </div>
+    
+    <div class="form-card">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Team Name *</label>
+                <input type="text" name="name" placeholder="Enter team name" required>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" rows="4" placeholder="Describe your team's purpose"></textarea>
+            </div>
+            <button type="submit" class="btn-primary" style="width: 100%;">Create Team</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .dashboard-container { max-width: 600px; margin: 100px auto 40px; padding: 0 20px; }
+    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .form-card { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+    .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+    .btn-secondary { padding: 10px 20px; background: #6c757d; color: white; text-decoration: none; border-radius: 8px; }
+    .btn-secondary:hover { background: #5a6268; }
+    .btn-primary { padding: 10px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; }
+    .btn-primary:hover { background: #764ba2; }
+    .alert { padding: 12px; border-radius: 8px; margin-bottom: 20px; }
+    .alert-success { background: #d4edda; color: #155724; }
+    .alert-error { background: #f8d7da; color: #721c24; }
+    
+    .dark .form-card { background: #1e1e32; }
+    .dark .form-group label { color: #e0e0e0; }
+    .dark .form-group input, .dark .form-group textarea { background: #2d2d44; color: #e0e0e0; border-color: #444466; }
+</style>
+{% endblock %}

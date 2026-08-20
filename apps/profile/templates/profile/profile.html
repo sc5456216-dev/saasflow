@@ -1,0 +1,42 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <h1>My Profile</h1>
+        <a href="{% url 'profile_edit' %}" class="btn-primary">Edit Profile</a>
+    </div>
+    
+    <div class="profile-card">
+        <div class="profile-info">
+            <div class="profile-avatar">
+                <div style="width: 120px; height: 120px; background: #667eea; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 48px; color: white;">
+                    {{ user.username|first|upper }}
+                </div>
+            </div>
+            <div class="profile-details">
+                <h2>{{ user.get_full_name|default:user.username }}</h2>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Location:</strong> {{ profile.location|default:"Not set" }}</p>
+                <p><strong>Phone:</strong> {{ profile.phone|default:"Not set" }}</p>
+                <p><strong>Bio:</strong> {{ profile.bio|default:"No bio yet" }}</p>
+                <p><strong>Email Verified:</strong> {% if profile.email_verified %}✅ Yes{% else %}❌ No{% endif %}</p>
+                <p><strong>Member since:</strong> {{ user.date_joined|date:"M d, Y" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .profile-container { max-width: 800px; margin: 100px auto 40px; padding: 0 20px; }
+    .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .profile-header h1 { font-size: 32px; }
+    .profile-card { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .profile-info { display: flex; gap: 40px; align-items: flex-start; }
+    .profile-details h2 { margin-bottom: 15px; }
+    .profile-details p { margin: 8px 0; }
+    .btn-primary { padding: 10px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; }
+    .btn-primary:hover { background: #764ba2; }
+    @media (max-width: 768px) { .profile-info { flex-direction: column; align-items: center; text-align: center; } }
+</style>
+{% endblock %}

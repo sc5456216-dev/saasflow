@@ -1,0 +1,55 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Teams</h1>
+        <a href="{% url 'team_create' %}" class="btn-primary">+ Create Team</a>
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    
+    {% if teams %}
+        <div class="teams-grid">
+            {% for team in teams %}
+                <div class="team-card">
+                    <h3>{{ team.name }}</h3>
+                    <p>{{ team.description|default:"No description" }}</p>
+                    <p><strong>Members:</strong> {{ team.members.count }}</p>
+                    <p><strong>Created:</strong> {{ team.created_at|date:"M d, Y" }}</p>
+                    <a href="{% url 'team_detail' team.id %}" class="btn-primary" style="font-size: 14px; padding: 8px 16px;">View Team</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>No teams created yet.</p>
+            <a href="{% url 'team_create' %}" class="btn-primary">Create Your First Team</a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .dashboard-container { max-width: 1200px; margin: 100px auto 40px; padding: 0 20px; }
+    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .teams-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .team-card { background: white; padding: 24px; border-radius: 12px; border: 1px solid #e0e0e0; transition: transform 0.3s; }
+    .team-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .team-card h3 { margin-bottom: 10px; color: #333; }
+    .team-card p { margin: 8px 0; color: #666; }
+    .btn-primary { display: inline-block; padding: 10px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; }
+    .btn-primary:hover { background: #764ba2; }
+    .empty-state { text-align: center; padding: 60px 20px; background: white; border-radius: 12px; }
+    .alert { padding: 12px; border-radius: 8px; margin-bottom: 20px; }
+    .alert-success { background: #d4edda; color: #155724; }
+    .alert-error { background: #f8d7da; color: #721c24; }
+    
+    .dark .team-card { background: #1e1e32; border-color: #2d2d44; }
+    .dark .team-card h3 { color: #e0e0e0; }
+    .dark .team-card p { color: #b0b0c0; }
+    .dark .empty-state { background: #1e1e32; }
+</style>
+{% endblock %}

@@ -1,0 +1,336 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <h1>Choose Your Plan</h1>
+            <p class="subtitle">Select the perfect plan for your business needs</p>
+        </div>
+        <a href="{% url 'dashboard' %}" class="btn-secondary">← Back to Dashboard</a>
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    
+    {% if not company %}
+        <div class="alert alert-warning">
+            <strong>⚠️ No company found!</strong> Please <a href="{% url 'create_company' %}">create a company</a> first before subscribing to a plan.
+        </div>
+    {% endif %}
+    
+    <div class="pricing-grid">
+        {% for plan in plans %}
+            <div class="pricing-card {% if plan.popular %}popular{% endif %}" 
+                 style="background: white; padding: 40px 30px; border-radius: 16px; 
+                        border: 1px solid {% if plan.popular %}#667eea{% else %}#e0e0e0{% endif %}; 
+                        text-align: center; position: relative; transition: transform 0.3s, box-shadow 0.3s;">
+                
+                {% if plan.popular %}
+                    <div class="popular-badge">⭐ Most Popular</div>
+                {% endif %}
+                
+                <div class="plan-icon">{{ plan.icon|default:"🚀" }}</div>
+                
+                <h3>{{ plan.name }}</h3>
+                <div class="price">
+                    {{ plan.price }}
+                    <span>{{ plan.period }}</span>
+                </div>
+                
+                <p class="plan-description">{{ plan.description|default:"Perfect for growing businesses" }}</p>
+                
+                <ul class="features-list">
+                    {% for feature in plan.features %}
+                        <li>
+                            <span class="check-mark">✓</span> {{ feature }}
+                        </li>
+                    {% endfor %}
+                </ul>
+                
+                {% if company %}
+                    {% if current_subscription and current_subscription.plan == plan.id %}
+                        <div class="current-plan-badge">
+                            ✅ Current Plan
+                        </div>
+                        <a href="#" class="btn-secondary" style="width: 100%; display: block; text-align: center; margin-top: 10px;">
+                            Manage Subscription
+                        </a>
+                    {% else %}
+                        <a href="{% url 'create_checkout' plan.id %}" 
+                           class="btn-primary {% if plan.popular %}btn-premium{% endif %}"
+                           style="display: block; padding: 14px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s; 
+                                  background: {% if plan.popular %}#667eea{% else %}#6c757d{% endif %}; color: white; width: 100%; border: none; cursor: pointer; text-align: center;">
+                            Subscribe with Stripe 💳
+                        </a>
+                        <p style="font-size: 12px; color: #666; margin-top: 10px;">Secure payment powered by Stripe</p>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'create_company' %}" class="btn-secondary" style="display: block; padding: 14px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s; width: 100%; text-align: center;">
+                        Create Company First
+                    </a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    
+    <div class="trust-section">
+        <div class="trust-item">
+            <span>🔒</span>
+            <p>Secure Payments</p>
+        </div>
+        <div class="trust-item">
+            <span>🔄</span>
+            <p>Cancel Anytime</p>
+        </div>
+        <div class="trust-item">
+            <span>💳</span>
+            <p>100+ Payment Methods</p>
+        </div>
+        <div class="trust-item">
+            <span>🛡️</span>
+            <p>Money-back Guarantee</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dashboard-container { max-width: 1200px; margin: 100px auto 40px; padding: 0 20px; }
+    
+    .dashboard-header { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: flex-start; 
+        margin-bottom: 40px; 
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .dashboard-header h1 { 
+        font-size: 36px; 
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .subtitle { 
+        color: #666; 
+        font-size: 18px;
+        -webkit-text-fill-color: #666;
+    }
+    
+    .btn-secondary { 
+        padding: 10px 20px; 
+        background: #6c757d; 
+        color: white; 
+        text-decoration: none; 
+        border-radius: 8px; 
+        transition: background 0.3s;
+    }
+    
+    .btn-secondary:hover { 
+        background: #5a6268; 
+    }
+    
+    .alert { 
+        padding: 12px 20px; 
+        border-radius: 8px; 
+        margin-bottom: 20px; 
+    }
+    
+    .alert-success { background: #d4edda; color: #155724; }
+    .alert-error { background: #f8d7da; color: #721c24; }
+    .alert-info { background: #d1ecf1; color: #0c5460; }
+    .alert-warning { background: #fff3cd; color: #856404; }
+    
+    .pricing-grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+        gap: 30px; 
+        margin-top: 30px; 
+    }
+    
+    .pricing-card { 
+        transition: transform 0.3s, box-shadow 0.3s; 
+        position: relative;
+    }
+    
+    .pricing-card:hover { 
+        transform: translateY(-8px); 
+        box-shadow: 0 12px 40px rgba(0,0,0,0.1); 
+    }
+    
+    .pricing-card.popular { 
+        border: 2px solid #667eea; 
+        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.15);
+    }
+    
+    .popular-badge {
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 6px 24px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+    
+    .plan-icon { 
+        font-size: 48px; 
+        margin-bottom: 10px; 
+    }
+    
+    .pricing-card h3 { 
+        font-size: 24px; 
+        margin-bottom: 10px;
+        color: #333;
+    }
+    
+    .price { 
+        font-size: 48px; 
+        font-weight: 800; 
+        margin: 15px 0; 
+        color: #1a1a2e;
+    }
+    
+    .price span { 
+        font-size: 18px; 
+        font-weight: 400; 
+        color: #666; 
+    }
+    
+    .plan-description {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 20px;
+        min-height: 40px;
+    }
+    
+    .features-list { 
+        list-style: none; 
+        padding: 0; 
+        margin: 25px 0 30px; 
+        text-align: left; 
+    }
+    
+    .features-list li { 
+        padding: 10px 0; 
+        border-bottom: 1px solid #f5f5f5; 
+        color: #444;
+        font-size: 14px;
+    }
+    
+    .features-list li:last-child {
+        border-bottom: none;
+    }
+    
+    .check-mark { 
+        color: #667eea; 
+        font-weight: 700; 
+        margin-right: 10px; 
+    }
+    
+    .btn-primary { 
+        padding: 14px; 
+        border-radius: 8px; 
+        text-decoration: none; 
+        font-weight: 600; 
+        transition: all 0.3s; 
+        display: block; 
+        text-align: center; 
+        border: none; 
+        cursor: pointer; 
+        width: 100%; 
+        font-size: 16px;
+    }
+    
+    .btn-primary:hover { 
+        transform: translateY(-2px); 
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-premium {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+    
+    .btn-premium:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+    }
+    
+    .btn-secondary {
+        background: #e9ecef;
+        color: #495057;
+        padding: 14px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+        display: block;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+    }
+    
+    .btn-secondary:hover {
+        background: #dee2e6;
+    }
+    
+    .current-plan-badge {
+        background: #28a745;
+        color: white;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .trust-section {
+        display: flex;
+        justify-content: center;
+        gap: 60px;
+        margin-top: 60px;
+        padding: 30px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        flex-wrap: wrap;
+    }
+    
+    .trust-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #555;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    
+    .trust-item span {
+        font-size: 24px;
+    }
+    
+    @media (max-width: 768px) {
+        .dashboard-header { 
+            flex-direction: column; 
+            align-items: flex-start; 
+        }
+        .pricing-grid { 
+            grid-template-columns: 1fr; 
+        }
+        .trust-section {
+            gap: 20px;
+            flex-direction: column;
+            align-items: center;
+        }
+        .price { font-size: 36px; }
+    }
+</style>
+{% endblock %}

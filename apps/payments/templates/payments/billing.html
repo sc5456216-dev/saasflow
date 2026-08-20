@@ -1,0 +1,71 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Billing History</h1>
+        <a href="{% url 'dashboard' %}" class="btn-secondary">← Dashboard</a>
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    
+    <div class="billing-card">
+        <h3>Subscription History</h3>
+        
+        {% if subscriptions %}
+            <table class="billing-table">
+                <thead>
+                    <tr>
+                        <th>Plan</th>
+                        <th>Status</th>
+                        <th>Started</th>
+                        <th>Auto Renew</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sub in subscriptions %}
+                        <tr>
+                            <td><strong>{{ sub.get_plan_display }}</strong></td>
+                            <td>
+                                <span class="status-badge status-{{ sub.status }}">
+                                    {{ sub.get_status_display }}
+                                </span>
+                            </td>
+                            <td>{{ sub.start_date|date:"M d, Y" }}</td>
+                            <td>{% if sub.auto_renew %}✅ Yes{% else %}❌ No{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty-state">
+                <p>No subscription history found.</p>
+                <a href="{% url 'plans' %}" class="btn-primary">View Plans</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .dashboard-container { max-width: 1000px; margin: 100px auto 40px; padding: 0 20px; }
+    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .billing-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .billing-card h3 { margin-bottom: 20px; }
+    .billing-table { width: 100%; border-collapse: collapse; }
+    .billing-table th, .billing-table td { padding: 12px; text-align: left; border-bottom: 1px solid #e0e0e0; }
+    .billing-table th { background: #f8f9fa; font-weight: 600; }
+    .billing-table tr:hover { background: #f8f9fa; }
+    .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .status-active { background: #d4edda; color: #155724; }
+    .status-cancelled { background: #f8d7da; color: #721c24; }
+    .status-expired { background: #fff3cd; color: #856404; }
+    .btn-secondary { padding: 10px 20px; background: #6c757d; color: white; text-decoration: none; border-radius: 8px; }
+    .btn-secondary:hover { background: #5a6268; }
+    .alert { padding: 12px; border-radius: 8px; margin-bottom: 20px; }
+    .alert-success { background: #d4edda; color: #155724; }
+    .empty-state { text-align: center; padding: 40px; color: #666; }
+</style>
+{% endblock %}

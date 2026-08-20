@@ -1,0 +1,78 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="container mx-auto px-4 py-8 mt-16">
+    <nav class="text-sm mb-8">
+        <a href="{% url "product_list" %}" class="text-[#667eea] hover:underline">← Back to Shop</a>
+    </nav>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full rounded-lg shadow-lg">
+            {% else %}
+                <div class="w-full h-96 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-image text-6xl text-gray-400"></i>
+                </div>
+            {% endif %}
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
+            <h1 class="text-3xl font-bold dark:text-white mb-4">{{ product.name }}</h1>
+            <div class="flex items-center mb-4">
+                <span class="text-3xl font-bold text-[#667eea]">${{ product.price }}</span>
+                {% if product.compare_price %}
+                    <span class="text-sm text-gray-500 line-through ml-3">${{ product.compare_price }}</span>
+                    <span class="ml-3 text-sm text-green-500">{{ product.get_discount_percentage }}% OFF</span>
+                {% endif %}
+            </div>
+            <p class="text-gray-600 dark:text-gray-400 mb-6">{{ product.description }}</p>
+            
+            <div class="border-t border-b py-4 my-4">
+                <div class="flex justify-between">
+                    <span class="text-gray-600 dark:text-gray-400">Category:</span>
+                    <span class="dark:text-white">{{ product.category.name|default:"Uncategorized" }}</span>
+                </div>
+                <div class="flex justify-between mt-2">
+                    <span class="text-gray-600 dark:text-gray-400">Stock:</span>
+                    <span class="{% if product.is_in_stock %}text-green-500{% else %}text-red-500{% endif %}">
+                        {% if product.is_in_stock %}{{ product.stock }} available{% else %}Out of Stock{% endif %}
+                    </span>
+                </div>
+            </div>
+
+            {% if product.is_in_stock %}
+                <a href="{% url "add_to_cart" product.id %}" class="btn-primary w-full text-center text-lg py-3">
+                    <i class="fas fa-cart-plus mr-2"></i> Add to Cart
+                </a>
+            {% else %}
+                <button disabled class="bg-gray-400 text-white w-full py-3 rounded-lg cursor-not-allowed text-lg">
+                    Out of Stock
+                </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    {% if related_products %}
+        <h2 class="text-2xl font-bold dark:text-white mt-12 mb-6">Related Products</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {% for related in related_products %}
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
+                    <a href="{% url "product_detail" related.slug %}">
+                        {% if related.image %}
+                            <img src="{{ related.image.url }}" alt="{{ related.name }}" class="w-full h-40 object-cover">
+                        {% else %}
+                            <div class="w-full h-40 bg-gray-300 dark:bg-gray-700 flex items-center justify-center">
+                                <i class="fas fa-image text-3xl text-gray-500"></i>
+                            </div>
+                        {% endif %}
+                        <div class="p-3">
+                            <h4 class="font-semibold dark:text-white">{{ related.name }}</h4>
+                            <p class="text-[#667eea] font-bold">${{ related.price }}</p>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

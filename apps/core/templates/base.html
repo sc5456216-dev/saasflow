@@ -19,6 +19,23 @@
         .dark .bg-white { background: #2d2d44 !important; }
         .dark .text-gray-600 { color: #a0aec0 !important; }
         .dark .border { border-color: #444466 !important; }
+        
+        /* Cart counter badge */
+        .cart-badge {
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            position: relative;
+            top: -8px;
+            right: 6px;
+            margin-left: -4px;
+        }
+        .cart-link {
+            position: relative;
+        }
     </style>
     
     {% block extra_head %}{% endblock %}
@@ -32,6 +49,16 @@
                 </a>
                 <div class="flex items-center space-x-4">
                     <a href="/" class="text-gray-600 hover:text-[#667eea] transition dark:text-gray-300">Home</a>
+                    
+                    <!-- Shop Link -->
+                    <a href="{% url 'product_list' %}" class="text-gray-600 hover:text-[#667eea] transition dark:text-gray-300">Shop</a>
+                    
+                    <!-- Cart Link with Badge -->
+                    <a href="{% url 'view_cart' %}" class="text-gray-600 hover:text-[#667eea] transition dark:text-gray-300 cart-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge" id="cartCount">0</span>
+                    </a>
+                    
                     {% if user.is_authenticated %}
                         <a href="/dashboard/" class="text-gray-600 hover:text-[#667eea] transition dark:text-gray-300">Dashboard</a>
                         <a href="/profile/" class="text-gray-600 hover:text-[#667eea] transition dark:text-gray-300">Profile</a>
@@ -94,6 +121,12 @@
             icon.classList.toggle('fa-sun');
         }
 
+        // Update cart count from localStorage
+        function updateCartCount() {
+            let count = localStorage.getItem('cartCount') || 0;
+            document.getElementById('cartCount').textContent = count;
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             if (localStorage.getItem('darkMode') === 'true') {
                 document.documentElement.classList.add('dark');
@@ -101,6 +134,7 @@
                 icon.classList.remove('fa-moon');
                 icon.classList.add('fa-sun');
             }
+            updateCartCount();
         });
     </script>
 

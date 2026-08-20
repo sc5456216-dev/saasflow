@@ -14,11 +14,10 @@ urlpatterns = [
     path('', include('apps.teams.urls')),
     path('', include('apps.payments.urls')),
     path('', include('apps.activity.urls')),
+    path('', include('apps.products.urls')),
     
-    # Redirect accounts/login to our login page
     path('accounts/login/', RedirectView.as_view(url='/login/', permanent=True)),
     
-    # Password Reset URLs
     path('password-reset/',
          auth_views.PasswordResetView.as_view(
              template_name='registration/password_reset.html',
@@ -43,6 +42,7 @@ urlpatterns = [
          name='password_reset_complete'),
 ]
 
+# Serve media files in development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

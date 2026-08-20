@@ -1,0 +1,72 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="container mx-auto px-4 py-8 mt-16">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Shop</h1>
+        <a href="{% url "view_cart" %}" class="btn-primary flex items-center">
+            <i class="fas fa-shopping-cart mr-2"></i> View Cart
+        </a>
+    </div>
+
+    <!-- Categories -->
+    <div class="flex flex-wrap gap-2 mb-8">
+        <a href="{% url "product_list" %}" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-full text-sm hover:bg-[#667eea] hover:text-white transition">All</a>
+        {% for category in categories %}
+            <a href="?category={{ category.slug }}" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-full text-sm hover:bg-[#667eea] hover:text-white transition">{{ category.name }}</a>
+        {% endfor %}
+    </div>
+
+    <!-- Search -->
+    <form method="get" class="mb-8">
+        <div class="flex gap-2">
+            <input type="text" name="q" placeholder="Search products..." value="{{ query }}" class="flex-1 px-4 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-white">
+            <button type="submit" class="btn-primary">Search</button>
+        </div>
+    </form>
+
+    <!-- Products Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for product in products %}
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
+                <a href="{% url "product_detail" product.slug %}">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-48 object-cover">
+                    {% else %}
+                        <div class="w-full h-48 bg-gray-300 dark:bg-gray-700 flex items-center justify-center">
+                            <i class="fas fa-image text-4xl text-gray-500"></i>
+                        </div>
+                    {% endif %}
+                </a>
+                <div class="p-4">
+                    <a href="{% url "product_detail" product.slug %}">
+                        <h3 class="text-lg font-semibold dark:text-white hover:text-[#667eea]">{{ product.name }}</h3>
+                    </a>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">{{ product.short_description|truncatechars:60 }}</p>
+                    <div class="flex items-center mt-2">
+                        <span class="text-2xl font-bold text-[#667eea]">${{ product.price }}</span>
+                        {% if product.compare_price %}
+                            <span class="text-sm text-gray-500 line-through ml-2">${{ product.compare_price }}</span>
+                            <span class="ml-2 text-sm text-green-500">{{ product.get_discount_percentage }}% OFF</span>
+                        {% endif %}
+                    </div>
+                    <div class="mt-3 flex items-center justify-between">
+                        <span class="text-sm {% if product.is_in_stock %}text-green-500{% else %}text-red-500{% endif %}">
+                            {% if product.is_in_stock %}In Stock{% else %}Out of Stock{% endif %}
+                        </span>
+                        {% if product.is_in_stock %}
+                            <a href="{% url "add_to_cart" product.id %}" class="btn-primary text-sm px-4 py-2">Add to Cart</a>
+                        {% else %}
+                            <button disabled class="bg-gray-400 text-white px-4 py-2 rounded-lg text-sm cursor-not-allowed">Out of Stock</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-span-full text-center py-12">
+                <i class="fas fa-box-open text-6xl text-gray-400 mb-4"></i>
+                <p class="text-gray-600 dark:text-gray-400">No products found.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

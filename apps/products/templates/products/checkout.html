@@ -1,0 +1,39 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="container mx-auto px-4 py-8 mt-16">
+    <h1 class="text-3xl font-bold dark:text-white mb-8">Checkout</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold dark:text-white mb-4">Order Summary</h2>
+            {% for item in cart_items %}
+                <div class="flex justify-between py-2 border-b dark:border-gray-700">
+                    <span class="dark:text-gray-300">{{ item.product.name }} x {{ item.quantity }}</span>
+                    <span class="dark:text-white">${{ item.get_total_price }}</span>
+                </div>
+            {% endfor %}
+            <div class="flex justify-between py-4 font-bold text-xl">
+                <span class="dark:text-white">Total</span>
+                <span class="text-[#667eea]">${{ total }}</span>
+            </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold dark:text-white mb-4">Shipping Details</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label class="block dark:text-gray-300 mb-2">Shipping Address</label>
+                    <textarea name="shipping_address" rows="4" class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block dark:text-gray-300 mb-2">Billing Address</label>
+                    <textarea name="billing_address" rows="4" class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600"></textarea>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Leave blank to use shipping address</p>
+                </div>
+                <button type="submit" class="btn-primary w-full">Place Order</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

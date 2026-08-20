@@ -20,21 +20,41 @@
         .dark .text-gray-600 { color: #a0aec0 !important; }
         .dark .border { border-color: #444466 !important; }
         
-        /* Cart counter badge */
+        .cart-link {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
         .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -12px;
             background: #dc3545;
             color: white;
             border-radius: 50%;
-            padding: 2px 6px;
+            padding: 1px 6px;
             font-size: 10px;
             font-weight: 700;
-            position: relative;
-            top: -8px;
-            right: 6px;
-            margin-left: -4px;
+            min-width: 18px;
+            text-align: center;
+            transition: transform 0.2s;
         }
-        .cart-link {
-            position: relative;
+        .cart-badge.bump {
+            animation: bump 0.3s ease;
+        }
+        @keyframes bump {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Toast notification styles */
+        .toast {
+            transition: all 0.3s ease;
+            transform: translateX(100%);
+        }
+        .toast.show {
+            transform: translateX(0);
         }
     </style>
     
@@ -49,13 +69,11 @@
                 </a>
                 <div class="flex items-center space-x-4">
                     <a href="/" class="text-gray-600 hover:text-[#667eea] transition dark:text-gray-300">Home</a>
-                    
-                    <!-- Shop Link -->
                     <a href="{% url 'product_list' %}" class="text-gray-600 hover:text-[#667eea] transition dark:text-gray-300">Shop</a>
                     
                     <!-- Cart Link with Badge -->
                     <a href="{% url 'view_cart' %}" class="text-gray-600 hover:text-[#667eea] transition dark:text-gray-300 cart-link">
-                        <i class="fas fa-shopping-cart"></i>
+                        <i class="fas fa-shopping-cart text-lg"></i>
                         <span class="cart-badge" id="cartCount">0</span>
                     </a>
                     
@@ -90,8 +108,36 @@
     <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2"></div>
 
     <script>
+        // Update cart count - called from anywhere
+        function updateCartCount() {
+            const badge = document.getElementById('cartCount');
+            if (!badge) return;
+            
+            fetch('/cart/count/')
+                .then(response => response.json())
+                .then(data => {
+                    const count = data.count || 0;
+                    badge.textContent = count;
+                    // Show/hide badge if count is 0
+                    if (count === 0) {
+                        badge.style.display = 'none';
+                    } else {
+                        badge.style.display = 'inline-block';
+                        // Bump animation
+                        badge.classList.add('bump');
+                        setTimeout(() => badge.classList.remove('bump'), 300);
+                    }
+                })
+                .catch(error => {
+                    console.log('Cart count error:', error);
+                });
+        }
+
+        // Show toast notifications
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
+            if (!container) return;
+            
             const toast = document.createElement('div');
             const colors = {
                 success: 'bg-green-500',
@@ -99,20 +145,19 @@
                 warning: 'bg-yellow-500',
                 info: 'bg-blue-500'
             };
-            toast.className = (colors[type] || colors.info) + ' text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full';
+            toast.className = (colors[type] || colors.info) + ' text-white px-6 py-3 rounded-lg shadow-lg mb-2';
             toast.textContent = message;
             container.appendChild(toast);
+            
             setTimeout(() => {
-                toast.classList.remove('translate-x-full');
-                toast.classList.add('translate-x-0');
-            }, 100);
-            setTimeout(() => {
-                toast.classList.remove('translate-x-0');
-                toast.classList.add('translate-x-full');
-                setTimeout(() => toast.remove(), 300);
+                if (toast.parentNode) {
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                }
             }, 3000);
         }
 
+        // Dark mode toggle
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
             localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
@@ -121,20 +166,45 @@
             icon.classList.toggle('fa-sun');
         }
 
-        // Update cart count from localStorage
-        function updateCartCount() {
-            let count = localStorage.getItem('cartCount') || 0;
-            document.getElementById('cartCount').textContent = count;
-        }
-
         document.addEventListener('DOMContentLoaded', function() {
+            // Load dark mode
             if (localStorage.getItem('darkMode') === 'true') {
                 document.documentElement.classList.add('dark');
                 const icon = document.getElementById('darkModeIcon');
                 icon.classList.remove('fa-moon');
                 icon.classList.add('fa-sun');
             }
+            
+            // Update cart count on page load
             updateCartCount();
+            
+            // Intercept ALL add to cart links
+            document.querySelectorAll('.add-to-cart, a[href*="add_to_cart"]').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    const url = this.getAttribute('href');
+                    if (url && url.includes('add_to_cart')) {
+                        e.preventDefault();
+                        
+                        fetch(url, {
+                            method: 'GET',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                showToast(data.message || 'Added to cart!', 'success');
+                                updateCartCount();
+                            }
+                        })
+                        .catch(function() {
+                            // Fallback: redirect to cart
+                            window.location.href = url;
+                        });
+                    }
+                });
+            });
         });
     </script>
 

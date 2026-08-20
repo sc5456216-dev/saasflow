@@ -22,16 +22,8 @@
                                 <tr class="border-b dark:border-gray-700">
                                     <td class="py-4">
                                         <div class="flex items-center">
-                                            <div class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center mr-4">
-                                                {% if item.product.image %}
-                                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-16 h-16 object-cover rounded">
-                                                {% else %}
-                                                    <i class="fas fa-image text-2xl text-gray-400"></i>
-                                                {% endif %}
-                                            </div>
                                             <div>
                                                 <p class="font-semibold dark:text-white">{{ item.product.name }}</p>
-                                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ item.product.category.name|default:"Uncategorized" }}</p>
                                             </div>
                                         </div>
                                     </td>
@@ -76,4 +68,19 @@
         </div>
     {% endif %}
 </div>
+
+<style>
+    .btn-secondary {
+        display: inline-block;
+        padding: 12px 24px;
+        background: #6c757d;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: background 0.3s;
+    }
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+</style>
 {% endblock %}

@@ -2,7 +2,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET
 from django.db.models import Q
 from .models import Product, Category, Cart, Order, OrderItem
 from apps.core.models import Company
@@ -12,13 +12,11 @@ def product_list(request):
     products = Product.objects.filter(status='published', is_active=True)
     categories = Category.objects.all()
     
-    # Filter by category
     category_slug = request.GET.get('category')
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
         products = products.filter(category=category)
     
-    # Search
     query = request.GET.get('q')
     if query:
         products = products.filter(
@@ -37,6 +35,13 @@ def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug, status='published')
     related_products = Product.objects.filter(category=product.category, status='published').exclude(id=product.id)[:4]
     
+    if request.method == 'POST' and request.user.is_authenticated:
+        if 'image' in request.FILES:
+            product.image = request.FILES['image']
+            product.save()
+            messages.success(request, 'Product image updated successfully!')
+            return redirect('product_detail', slug=product.slug)
+    
     context = {
         'product': product,
         'related_products': related_products,
@@ -54,6 +59,13 @@ def add_to_cart(request, product_id):
     if not created:
         cart_item.quantity += 1
         cart_item.save()
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'success': True,
+            'message': f'"{product.name}" added to cart!',
+            'cart_count': Cart.objects.filter(user=request.user).count()
+        })
     
     messages.success(request, f'"{product.name}" added to cart!')
     return redirect('view_cart')
@@ -101,7 +113,6 @@ def checkout(request):
     if request.method == 'POST':
         company = Company.objects.filter(owner=request.user).first()
         
-        # Create order
         total = sum(item.get_total_price() for item in cart_items)
         order_number = f"ORD-{uuid.uuid4().hex[:8].upper()}"
         
@@ -114,7 +125,6 @@ def checkout(request):
             billing_address=request.POST.get('billing_address', request.POST.get('shipping_address')),
         )
         
-        # Create order items
         for item in cart_items:
             OrderItem.objects.create(
                 order=order,
@@ -124,7 +134,6 @@ def checkout(request):
                 subtotal=item.get_total_price()
             )
         
-        # Clear cart
         cart_items.delete()
         
         messages.success(request, f'Order #{order_number} placed successfully!')
@@ -146,3 +155,10 @@ def order_confirmation(request, order_id):
 def order_history(request):
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'products/order_history.html', {'orders': orders})
+
+@login_required(login_url='/login/')
+@require_GET
+def cart_count(request):
+    """API endpoint to get cart count for the current user"""
+    count = Cart.objects.filter(user=request.user).count()
+    return JsonResponse({'count': count})

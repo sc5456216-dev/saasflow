@@ -131,4 +131,16 @@ EMAIL_USE_LOCALTIME = True
 EMAIL_SUBJECT_PREFIX = '[SaaSFlow] '
 
 os.makedirs(MEDIA_ROOT, exist_ok=True)
-os.makedirs(STATIC_ROOT, exist_ok=True)
+os.makedirs(STATIC_ROOT, exist_ok=True)# Include cache settings
+from config.settings_cache import *
+
+# Static files compression
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Security headers
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+
+# Add templates for error pages
+TEMPLATES[0]['DIRS'] = [os.path.join(BASE_DIR, 'templates')]

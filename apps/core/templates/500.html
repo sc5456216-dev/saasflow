@@ -1,0 +1,37 @@
+﻿{% extends "base.html" %}
+{% block title %}Server Error{% endblock %}
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center px-4">
+    <div class="text-center">
+        <div class="text-9xl font-bold text-red-500 opacity-20">500</div>
+        <h1 class="text-4xl md:text-5xl font-bold dark:text-white mt-4">Server Error</h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-4 max-w-md mx-auto">
+            Something went wrong on our end. Please try again later.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4 justify-center">
+            <a href="/" class="btn-primary">
+                <i class="fas fa-home mr-2"></i> Go Home
+            </a>
+            <button onclick="location.reload()" class="btn-secondary">
+                <i class="fas fa-sync mr-2"></i> Try Again
+            </button>
+        </div>
+    </div>
+</div>
+<style>
+    .btn-secondary {
+        display: inline-block;
+        padding: 12px 24px;
+        background: #6c757d;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: background 0.3s;
+        border: none;
+        cursor: pointer;
+    }
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+</style>
+{% endblock %}

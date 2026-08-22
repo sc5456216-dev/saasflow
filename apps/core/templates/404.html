@@ -1,0 +1,39 @@
+﻿{% extends "base.html" %}
+{% block title %}Page Not Found{% endblock %}
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center px-4">
+    <div class="text-center">
+        <div class="text-9xl font-bold text-[#667eea] opacity-20">404</div>
+        <h1 class="text-4xl md:text-5xl font-bold dark:text-white mt-4">Page Not Found</h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-4 max-w-md mx-auto">
+            Oops! The page you're looking for doesn't exist or has been moved.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4 justify-center">
+            <a href="/" class="btn-primary">
+                <i class="fas fa-home mr-2"></i> Go Home
+            </a>
+            <a href="{% url 'product_list' %}" class="btn-secondary">
+                <i class="fas fa-shopping-bag mr-2"></i> Continue Shopping
+            </a>
+        </div>
+        <div class="mt-8">
+            <img src="https://images.unsplash.com/photo-1605152276897-7c7f44f9b7f9?w=400&h=300&fit=crop" 
+                 alt="Lost" class="rounded-lg shadow-lg mx-auto max-w-sm">
+        </div>
+    </div>
+</div>
+<style>
+    .btn-secondary {
+        display: inline-block;
+        padding: 12px 24px;
+        background: #6c757d;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: background 0.3s;
+    }
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+</style>
+{% endblock %}

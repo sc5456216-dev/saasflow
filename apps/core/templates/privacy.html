@@ -1,0 +1,68 @@
+﻿{% extends "base.html" %}
+{% block title %}Privacy Policy{% endblock %}
+{% block content %}
+<div class="container mx-auto px-4 py-8 mt-16 max-w-4xl">
+    <h1 class="text-3xl font-bold dark:text-white mb-6">Privacy Policy</h1>
+    <p class="text-gray-500 dark:text-gray-400 mb-8">Last updated: August 22, 2026</p>
+    
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 space-y-6">
+        <section>
+            <h2 class="text-xl font-semibold dark:text-white mb-3">1. Information We Collect</h2>
+            <p class="text-gray-600 dark:text-gray-400">We collect information you provide directly, such as:</p>
+            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 ml-4 mt-2 space-y-1">
+                <li>Name and contact information (email, phone)</li>
+                <li>Account credentials (username, password)</li>
+                <li>Payment information (processed securely via Stripe)</li>
+                <li>Company and team information</li>
+                <li>Order history and preferences</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2 class="text-xl font-semibold dark:text-white mb-3">2. How We Use Your Information</h2>
+            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 ml-4 space-y-1">
+                <li>Provide and maintain our services</li>
+                <li>Process transactions and orders</li>
+                <li>Send you updates and promotional materials</li>
+                <li>Improve our products and services</li>
+                <li>Ensure security and prevent fraud</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2 class="text-xl font-semibold dark:text-white mb-3">3. Data Security</h2>
+            <p class="text-gray-600 dark:text-gray-400">We implement industry-standard security measures to protect your data, including encryption, secure servers, and regular security audits.</p>
+        </section>
+        
+        <section>
+            <h2 class="text-xl font-semibold dark:text-white mb-3">4. Third-Party Services</h2>
+            <p class="text-gray-600 dark:text-gray-400">We use trusted third-party services for:</p>
+            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 ml-4 mt-2 space-y-1">
+                <li>Payment processing (Stripe)</li>
+                <li>Email delivery</li>
+                <li>Analytics</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2 class="text-xl font-semibold dark:text-white mb-3">5. Your Rights</h2>
+            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 ml-4 space-y-1">
+                <li>Access your data at any time</li>
+                <li>Request data correction or deletion</li>
+                <li>Opt-out of marketing communications</li>
+                <li>Export your data</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2 class="text-xl font-semibold dark:text-white mb-3">6. Contact Us</h2>
+            <p class="text-gray-600 dark:text-gray-400">If you have questions about this policy, contact us at:</p>
+            <p class="text-[#667eea] mt-2">support@saasflow.com</p>
+        </section>
+    </div>
+    
+    <div class="mt-8 text-center">
+        <a href="/" class="btn-primary">Back to Home</a>
+    </div>
+</div>
+{% endblock %}

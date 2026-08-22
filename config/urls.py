@@ -50,3 +50,6 @@ from apps.core.views import newsletter_subscribe
 
 # Add this to urlpatterns
 path('newsletter/subscribe/', newsletter_subscribe, name='newsletter_subscribe'),
+# Add to config/urls.py urlpatterns
+path('privacy/', TemplateView.as_view(template_name='privacy.html'), name='privacy'),
+path('terms/', TemplateView.as_view(template_name='terms.html'), name='terms'),

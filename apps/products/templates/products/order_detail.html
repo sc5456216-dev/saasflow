@@ -1,0 +1,176 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="container mx-auto px-4 py-8 mt-16">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold dark:text-white">Order #{{ order.order_number }}</h1>
+            <a href="{% url 'order_history' %}" class="text-[#667eea] hover:text-[#764ba2]">
+                ← Back to Orders
+            </a>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Order Status -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">Order Status</span>
+                    <div class="flex items-center mt-1">
+                        <span class="text-2xl mr-2">{{ order.get_status_icon }}</span>
+                        <span class="text-xl font-semibold dark:text-white">{{ order.get_status_display }}</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span class="text-sm text-gray-500 dark:text-gray-400">Placed on</span>
+                    <p class="font-medium dark:text-white">{{ order.created_at|date:"M d, Y H:i" }}</p>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mt-4">
+                <div class="relative pt-1">
+                    <div class="flex mb-2 items-center justify-between">
+                        <div>
+                            <span class="text-xs font-semibold inline-block text-[#667eea]">
+                                {{ progress }}% Complete
+                            </span>
+                        </div>
+                    </div>
+                    <div class="overflow-hidden h-2 text-xs flex rounded bg-gray-200 dark:bg-gray-700">
+                        <div style="width: {{ progress }}%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-[#667eea] transition-all duration-500"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tracking Timeline -->
+            <div class="mt-6" id="tracking">
+                <h3 class="text-lg font-semibold dark:text-white mb-4">Tracking Timeline</h3>
+                <div class="relative">
+                    {% for status_code in status_order %}
+                        {% with status_name=status_code|title %}
+                            <div class="flex items-center mb-4 {% if forloop.last %}mb-0{% endif %}">
+                                <div class="flex flex-col items-center mr-4">
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center 
+                                        {% if forloop.counter0 <= current_index %}
+                                            bg-[#667eea] text-white
+                                        {% else %}
+                                            bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400
+                                        {% endif %}">
+                                        {% if forloop.counter0 < current_index %}
+                                            <i class="fas fa-check"></i>
+                                        {% elif forloop.counter0 == current_index %}
+                                            <i class="fas fa-circle"></i>
+                                        {% else %}
+                                            <span class="text-sm">{{ forloop.counter }}</span>
+                                        {% endif %}
+                                    </div>
+                                    {% if not forloop.last %}
+                                        <div class="w-0.5 h-8 bg-gray-300 dark:bg-gray-600 
+                                            {% if forloop.counter0 < current_index %}bg-[#667eea]{% endif %}">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <p class="font-medium dark:text-white">{{ status_name }}</p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                                        {% if forloop.counter0 == 0 %}
+                                            {{ order.created_at|date:"M d, Y" }}
+                                        {% elif forloop.counter0 == current_index %}
+                                            {{ order.updated_at|date:"M d, Y H:i" }}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        {% endwith %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Tracking Info -->
+            {% if order.tracking_number %}
+                <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Tracking Number</span>
+                            <p class="font-medium dark:text-white">{{ order.tracking_number }}</p>
+                        </div>
+                        {% if order.tracking_url %}
+                            <a href="{{ order.tracking_url }}" target="_blank" class="btn-primary text-sm">
+                                <i class="fas fa-external-link-alt mr-1"></i> Track Package
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Order Details -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h2 class="text-lg font-bold dark:text-white mb-4">Order Items</h2>
+                {% for item in order.items.all %}
+                    <div class="flex justify-between py-2 border-b dark:border-gray-700">
+                        <div>
+                            <p class="font-medium dark:text-white">{{ item.product.name }}</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Qty: {{ item.quantity }}</p>
+                        </div>
+                        <p class="font-medium dark:text-white">${{ item.subtotal }}</p>
+                    </div>
+                {% endfor %}
+                <div class="flex justify-between py-4 font-bold text-lg">
+                    <span class="dark:text-white">Total</span>
+                    <span class="text-[#667eea]">${{ order.total_amount }}</span>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h2 class="text-lg font-bold dark:text-white mb-4">Shipping Address</h2>
+                <p class="dark:text-gray-300 whitespace-pre-line">{{ order.shipping_address }}</p>
+                
+                <h2 class="text-lg font-bold dark:text-white mt-6 mb-4">Payment Status</h2>
+                <p class="dark:text-gray-300">
+                    <span class="px-2 py-1 rounded-full text-sm
+                        {% if order.payment_status == 'paid' %}
+                            bg-green-100 text-green-800
+                        {% else %}
+                            bg-yellow-100 text-yellow-800
+                        {% endif %}">
+                        {{ order.payment_status|title }}
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        {% if user.is_staff %}
+            <div class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h2 class="text-lg font-bold dark:text-white mb-4">Admin Actions</h2>
+                <form method="post" action="{% url 'update_order_status' order.id %}">
+                    {% csrf_token %}
+                    <div class="flex gap-4 items-center">
+                        <select name="status" class="px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white">
+                            {% for status_code, status_name in order.STATUS_CHOICES %}
+                                <option value="{{ status_code }}" {% if order.status == status_code %}selected{% endif %}>
+                                    {{ status_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn-primary">Update Status</button>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .alert { padding: 12px; border-radius: 8px; margin-bottom: 20px; }
+    .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+</style>
+{% endblock %}

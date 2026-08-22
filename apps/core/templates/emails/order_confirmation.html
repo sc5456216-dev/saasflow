@@ -1,0 +1,33 @@
+﻿{% extends "emails/base_email.html" %}
+{% block title %}Order Confirmation{% endblock %}
+{% block content %}
+<h2>Order Confirmed! 🛍️</h2>
+<p>Hi {{ user.username }},</p>
+<p>Thank you for your order! We have received your order and it is being processed.</p>
+
+<div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+    <h3 style="margin-top: 0;">Order Details</h3>
+    <p><strong>Order Number:</strong> #{{ order_number }}</p>
+    <p><strong>Date:</strong> {{ created_at|date:"M d, Y H:i" }}</p>
+    <p><strong>Status:</strong> {{ status }}</p>
+    <p><strong>Total:</strong> ${{ total }}</p>
+    
+    <h4 style="margin: 15px 0 10px;">Items:</h4>
+    <ul style="list-style: none; padding: 0;">
+        {% for item in items %}
+        <li style="padding: 8px 0; border-bottom: 1px solid #eee;">
+            {{ item.product.name }} x {{ item.quantity }} - ${{ item.subtotal }}
+        </li>
+        {% endfor %}
+    </ul>
+    
+    <h4 style="margin: 15px 0 10px;">Shipping Address:</h4>
+    <p>{{ shipping_address|linebreaks }}</p>
+</div>
+
+<a href="{{ site_url }}{{ dashboard_url }}" class="btn">Track Your Order</a>
+
+<p style="margin-top: 20px; color: #666; font-size: 14px;">
+    We will notify you when your order ships.
+</p>
+{% endblock %}

@@ -1,0 +1,31 @@
+﻿{% extends "emails/base_email.html" %}
+{% block title %}Welcome to SaaSFlow!{% endblock %}
+{% block content %}
+<h2>Welcome to SaaSFlow, {{ username }}! 🎉</h2>
+<p>We are thrilled to have you on board. You have just joined the most powerful SaaS platform built with Django.</p>
+
+<div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+    <h3 style="margin-top: 0;">Your Account Details:</h3>
+    <p><strong>Username:</strong> {{ username }}</p>
+    <p><strong>Email:</strong> {{ email }}</p>
+</div>
+
+<h3>What's Next?</h3>
+<ul>
+    <li>🚀 Complete your profile: <a href="{{ site_url }}{{ dashboard_url }}">Go to Dashboard</a></li>
+    <li>🏢 Create your company</li>
+    <li>👥 Invite team members</li>
+    <li>💳 Choose your subscription plan</li>
+</ul>
+
+<a href="{{ site_url }}{{ dashboard_url }}" class="btn">Go to Dashboard</a>
+
+<p style="margin-top: 20px; color: #666; font-size: 14px;">
+    If you have any questions, feel free to reply to this email.
+</p>
+
+<p style="margin-top: 10px;">
+    Cheers,<br>
+    <strong>The SaaSFlow Team</strong>
+</p>
+{% endblock %}

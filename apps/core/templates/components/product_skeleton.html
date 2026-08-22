@@ -1,0 +1,30 @@
+﻿<!-- Skeleton Loading for Products -->
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6" id="skeletonProducts">
+    {% for i in "12345678"|make_list %}
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div class="skeleton skeleton-image"></div>
+            <div class="skeleton skeleton-title"></div>
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text" style="width: 70%;"></div>
+            <div class="skeleton skeleton-price"></div>
+            <div class="skeleton skeleton-button"></div>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    // Show skeleton loading
+    function showSkeleton() {
+        const skeleton = document.getElementById('skeletonProducts');
+        if (skeleton) {
+            skeleton.style.display = 'grid';
+        }
+    }
+
+    function hideSkeleton() {
+        const skeleton = document.getElementById('skeletonProducts');
+        if (skeleton) {
+            skeleton.style.display = 'none';
+        }
+    }
+</script>

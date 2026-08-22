@@ -3,6 +3,13 @@
 <div class="container mx-auto px-4 py-8 mt-16">
     <h1 class="text-3xl font-bold dark:text-white mb-8">Order History</h1>
     
+    <div class="flex gap-4 mb-6">
+        <a href="{% url 'order_history' %}" class="btn-primary text-sm">All Orders</a>
+        <a href="{% url 'track_order' %}" class="btn-secondary text-sm">
+            <i class="fas fa-truck mr-1"></i> Track Order
+        </a>
+    </div>
+    
     {% if orders %}
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
             <div class="overflow-x-auto">
@@ -23,18 +30,15 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ order.created_at|date:"M d, Y" }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm dark:text-white">${{ order.total_amount }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                        {% if order.status == "pending" %}bg-yellow-100 text-yellow-800
-                                        {% elif order.status == "processing" %}bg-blue-100 text-blue-800
-                                        {% elif order.status == "shipped" %}bg-purple-100 text-purple-800
-                                        {% elif order.status == "delivered" %}bg-green-100 text-green-800
-                                        {% elif order.status == "cancelled" %}bg-red-100 text-red-800
-                                        {% endif %}">
-                                        {{ order.get_status_display }}
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ order.get_status_color }}">
+                                        {{ order.get_status_icon }} {{ order.get_status_display }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <a href="{% url "order_confirmation" order.id %}" class="text-[#667eea] hover:text-[#764ba2]">View Details</a>
+                                    <a href="{% url 'order_detail' order.id %}" class="text-[#667eea] hover:text-[#764ba2]">View Details</a>
+                                    <a href="{% url 'order_detail' order.id %}#tracking" class="ml-2 text-green-500 hover:text-green-700">
+                                        <i class="fas fa-truck"></i> Track
+                                    </a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -46,8 +50,23 @@
         <div class="text-center py-12">
             <i class="fas fa-box-open text-6xl text-gray-400 mb-4"></i>
             <p class="text-gray-600 dark:text-gray-400">You haven't placed any orders yet.</p>
-            <a href="{% url "product_list" %}" class="btn-primary inline-block mt-4">Start Shopping</a>
+            <a href="{% url 'product_list' %}" class="btn-primary inline-block mt-4">Start Shopping</a>
         </div>
     {% endif %}
 </div>
+
+<style>
+    .btn-secondary {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #6c757d;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: background 0.3s;
+    }
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+</style>
 {% endblock %}

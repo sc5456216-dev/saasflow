@@ -50,6 +50,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.core.context_processors.categories',
             ],
         },
     },
@@ -124,3 +125,17 @@ STATICFILES_DIRS = [
 
 os.makedirs(MEDIA_ROOT, exist_ok=True)
 os.makedirs(STATIC_ROOT, exist_ok=True)
+
+
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # For Gmail
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@saasflow.com')
+EMAIL_USE_LOCALTIME = True
+
+# Email Templates
+EMAIL_SUBJECT_PREFIX = '[SaaSFlow] '

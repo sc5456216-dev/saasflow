@@ -1,0 +1,84 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="container mx-auto px-4 py-8 mt-16 max-w-2xl">
+    <h1 class="text-2xl font-bold dark:text-white mb-4">Edit Review</h1>
+    
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="block dark:text-gray-300 mb-2">Rating</label>
+                <div class="flex gap-2" id="star-rating">
+                    {% for i in "12345" %}
+                        <button type="button" class="star-btn text-3xl hover:text-yellow-400 {% if forloop.counter <= review.rating %}text-yellow-400{% endif %}" data-value="{{ forloop.counter }}">
+                            {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                        </button>
+                    {% endfor %}
+                    <input type="hidden" name="rating" id="rating-input" value="{{ review.rating }}">
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="block dark:text-gray-300 mb-2">Title</label>
+                <input type="text" name="title" value="{{ review.title }}" class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600">
+            </div>
+            <div class="mb-4">
+                <label class="block dark:text-gray-300 mb-2">Comment</label>
+                <textarea name="comment" rows="4" class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600" required>{{ review.comment }}</textarea>
+            </div>
+            <button type="submit" class="btn-primary">Update Review</button>
+            <a href="{% url 'product_detail' review.product.slug %}" class="btn-secondary ml-2">Cancel</a>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const starBtns = document.querySelectorAll('.star-btn');
+    const ratingInput = document.getElementById('rating-input');
+    let selectedRating = {{ review.rating }};
+    
+    starBtns.forEach((btn, index) => {
+        btn.addEventListener('click', function() {
+            const value = parseInt(this.dataset.value);
+            selectedRating = value;
+            ratingInput.value = value;
+            
+            starBtns.forEach((b, i) => {
+                if (i < value) {
+                    b.textContent = '★';
+                    b.classList.add('text-yellow-400');
+                } else {
+                    b.textContent = '☆';
+                    b.classList.remove('text-yellow-400');
+                }
+            });
+        });
+        
+        btn.addEventListener('mouseenter', function() {
+            const value = parseInt(this.dataset.value);
+            starBtns.forEach((b, i) => {
+                if (i < value) {
+                    b.textContent = '★';
+                    b.classList.add('text-yellow-400');
+                } else {
+                    b.textContent = '☆';
+                    b.classList.remove('text-yellow-400');
+                }
+            });
+        });
+        
+        btn.addEventListener('mouseleave', function() {
+            starBtns.forEach((b, i) => {
+                if (i < selectedRating) {
+                    b.textContent = '★';
+                    b.classList.add('text-yellow-400');
+                } else {
+                    b.textContent = '☆';
+                    b.classList.remove('text-yellow-400');
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SaaSFlow{% endblock %}</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .header h1 { margin: 0; font-size: 28px; }
+        .header span { opacity: 0.8; }
+        .content { background: #f8f9ff; padding: 30px; border-radius: 0 0 10px 10px; }
+        .btn { display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; margin: 10px 0; }
+        .btn:hover { background: #764ba2; }
+        .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #999; }
+        .footer a { color: #667eea; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SaaS<span>Flow</span></h1>
+        <p style="margin: 5px 0 0;">Modern SaaS Platform</p>
+    </div>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+    <div class="footer">
+        <p>&copy; 2026 SaaSFlow. All rights reserved.</p>
+        <p>
+            <a href="https://github.com/sc5456216-dev/saasflow">GitHub</a> |
+            <a href="mailto:support@saasflow.com">Support</a>
+        </p>
+        <p style="margin-top: 10px; font-size: 11px; color: #ccc;">
+            This email was sent to you because you are a user of SaaSFlow.
+        </p>
+    </div>
+</body>
+</html>

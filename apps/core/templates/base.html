@@ -48,19 +48,363 @@
             100% { transform: scale(1); }
         }
         
-        /* Toast notification styles */
-        .toast {
-            transition: all 0.3s ease;
-            transform: translateX(100%);
+        .wishlist-link {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
         }
-        .toast.show {
-            transform: translateX(0);
+        .wishlist-badge {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: #e83e8c;
+            color: white;
+            border-radius: 50%;
+            padding: 1px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
+        }
+        
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 8px 0;
+            z-index: 1000;
+            margin-top: 4px;
+        }
+        .dropdown-content a {
+            color: #333;
+            padding: 10px 20px;
+            text-decoration: none;
+            display: block;
+            transition: background 0.2s;
+            font-size: 14px;
+        }
+        .dropdown-content a:hover {
+            background: #f8f9ff;
+            color: #667eea;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-btn {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .dark .dropdown-content {
+            background: #2d2d44;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        .dark .dropdown-content a {
+            color: #e0e0e0;
+        }
+        .dark .dropdown-content a:hover {
+            background: #3d3d5c;
+            color: #667eea;
+        }
+        
+        .dropdown-content .category-icon {
+            margin-right: 8px;
+            width: 20px;
+            display: inline-block;
+        }
+        
+        /* Search Styles */
+        .search-container {
+            position: relative;
+            display: inline-block;
+        }
+        .search-input {
+            padding: 8px 16px 8px 36px;
+            border-radius: 20px;
+            border: 1px solid #e0e0e0;
+            background: #f5f6fa;
+            width: 200px;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        .search-input:focus {
+            width: 280px;
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .search-input.dark-mode {
+            background: #3d3d5c;
+            border-color: #555577;
+            color: white;
+        }
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        .search-results {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            margin-top: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .search-results.show {
+            display: block;
+        }
+        .search-results .result-item {
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .search-results .result-item:hover {
+            background: #f8f9ff;
+        }
+        .search-results .result-item .result-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+        .search-results .result-item .result-info {
+            flex: 1;
+        }
+        .search-results .result-item .result-name {
+            font-weight: 500;
+            color: #333;
+        }
+        .search-results .result-item .result-price {
+            color: #667eea;
+            font-weight: 600;
+        }
+        .search-results .result-item .result-category {
+            font-size: 12px;
+            color: #999;
+        }
+        .search-results .result-item .result-type {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: #e0e0e0;
+            color: #666;
+        }
+        .search-results .no-results {
+            padding: 20px;
+            text-align: center;
+            color: #999;
+        }
+        .search-results .view-all {
+            padding: 12px;
+            text-align: center;
+            background: #f8f9ff;
+            color: #667eea;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .search-results .view-all:hover {
+            background: #eef0ff;
+        }
+        
+        .dark .search-input {
+            background: #3d3d5c;
+            border-color: #555577;
+            color: white;
+        }
+        .dark .search-input::placeholder {
+            color: #9999bb;
+        }
+        .dark .search-results {
+            background: #2d2d44;
+            border: 1px solid #444466;
+        }
+        .dark .search-results .result-item {
+            border-bottom-color: #3d3d5c;
+        }
+        .dark .search-results .result-item .result-name {
+            color: #e0e0e0;
+        }
+        .dark .search-results .result-item .result-category {
+            color: #9999bb;
+        }
+        .dark .search-results .result-item:hover {
+            background: #3d3d5c;
+        }
+        .dark .search-results .result-type {
+            background: #444466;
+            color: #aaaacc;
+        }
+        .dark .search-results .view-all {
+            background: #3d3d5c;
+        }
+        .dark .search-results .view-all:hover {
+            background: #444466;
+        }
+        .dark .search-results .no-results {
+            color: #9999bb;
+        }
+        
+        /* Loading States - Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+        .skeleton-image {
+            height: 200px;
+            width: 100%;
+            border-radius: 12px 12px 0 0;
+        }
+        .skeleton-title {
+            height: 20px;
+            width: 80%;
+            margin: 12px 16px 8px;
+        }
+        .skeleton-text {
+            height: 14px;
+            width: 90%;
+            margin: 4px 16px;
+        }
+        .skeleton-price {
+            height: 24px;
+            width: 40%;
+            margin: 8px 16px 12px;
+        }
+        .skeleton-button {
+            height: 40px;
+            width: 100px;
+            margin: 0 16px 16px;
+            border-radius: 8px;
+        }
+        
+        .dark .skeleton {
+            background: linear-gradient(90deg, #2d2d44 25%, #3d3d5c 50%, #2d2d44 75%);
+        }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loading-overlay.show {
+            display: flex;
+        }
+        .loading-overlay .spinner-container {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .loading-overlay .spinner-container p {
+            margin-top: 12px;
+            color: #666;
+            font-size: 14px;
+        }
+        .dark .loading-overlay .spinner-container {
+            background: #2d2d44;
+        }
+        .dark .loading-overlay .spinner-container p {
+            color: #a0aec0;
+        }
+        
+        /* Spinner */
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        .spinner-lg {
+            width: 60px;
+            height: 60px;
+            border-width: 6px;
+        }
+        .spinner-sm {
+            width: 20px;
+            height: 20px;
+            border-width: 2px;
+        }
+        .dark .spinner {
+            border-color: #3d3d5c;
+            border-top-color: #667eea;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Inline loading */
+        .loading-inline {
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+        .loading-inline.show {
+            display: inline-flex;
+        }
+        
+        @media (max-width: 768px) {
+            .search-input {
+                width: 120px;
+                font-size: 12px;
+                padding: 6px 12px 6px 28px;
+            }
+            .search-input:focus {
+                width: 160px;
+            }
         }
     </style>
     
     {% block extra_head %}{% endblock %}
 </head>
 <body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner-container">
+            <div class="spinner spinner-lg"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+
     <nav class="bg-white shadow-md fixed w-full top-0 z-50 dark:bg-gray-800">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-4">
@@ -69,12 +413,47 @@
                 </a>
                 <div class="flex items-center space-x-4">
                     <a href="/" class="text-gray-600 hover:text-[#667eea] transition dark:text-gray-300">Home</a>
+                    
+                    <div class="dropdown">
+                        <span class="text-gray-600 hover:text-[#667eea] transition dark:text-gray-300 dropdown-btn">
+                            <i class="fas fa-th-list"></i> Categories <i class="fas fa-chevron-down text-xs"></i>
+                        </span>
+                        <div class="dropdown-content">
+                            <a href="{% url 'product_list' %}">
+                                <i class="fas fa-th-large category-icon"></i> All Products
+                            </a>
+                            {% for category in categories %}
+                                <a href="{% url 'product_list' %}?category={{ category.slug }}">
+                                    <i class="fas {{ category.icon|default:'fa-tag' }} category-icon"></i> {{ category.name }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
                     <a href="{% url 'product_list' %}" class="text-gray-600 hover:text-[#667eea] transition dark:text-gray-300">Shop</a>
                     
-                    <!-- Cart Link with Badge -->
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchInput" class="search-input dark-mode" placeholder="Search products..." autocomplete="off">
+                        <div id="searchResults" class="search-results"></div>
+                    </div>
+                    
+                    <a href="{% url 'wishlist' %}" class="text-gray-600 hover:text-[#667eea] transition dark:text-gray-300 wishlist-link">
+                        <i class="fas fa-heart text-lg"></i>
+                        <span class="wishlist-badge" id="wishlistCount">0</span>
+                    </a>
+                    
                     <a href="{% url 'view_cart' %}" class="text-gray-600 hover:text-[#667eea] transition dark:text-gray-300 cart-link">
                         <i class="fas fa-shopping-cart text-lg"></i>
                         <span class="cart-badge" id="cartCount">0</span>
+                    </a>
+                    
+                    <a href="{% url 'recently_viewed' %}" class="text-gray-600 hover:text-[#667eea] transition dark:text-gray-300">
+                        <i class="fas fa-eye"></i> Recent
+                    </a>
+                    
+                    <a href="{% url 'track_order' %}" class="text-gray-600 hover:text-[#667eea] transition dark:text-gray-300">
+                        <i class="fas fa-truck"></i> Track
                     </a>
                     
                     {% if user.is_authenticated %}
@@ -108,7 +487,16 @@
     <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2"></div>
 
     <script>
-        // Update cart count - called from anywhere
+        // Show loading overlay
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('show');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('show');
+        }
+
+        // Update cart count
         function updateCartCount() {
             const badge = document.getElementById('cartCount');
             if (!badge) return;
@@ -118,18 +506,37 @@
                 .then(data => {
                     const count = data.count || 0;
                     badge.textContent = count;
-                    // Show/hide badge if count is 0
                     if (count === 0) {
                         badge.style.display = 'none';
                     } else {
                         badge.style.display = 'inline-block';
-                        // Bump animation
                         badge.classList.add('bump');
                         setTimeout(() => badge.classList.remove('bump'), 300);
                     }
                 })
                 .catch(error => {
                     console.log('Cart count error:', error);
+                });
+        }
+
+        // Update wishlist count
+        function updateWishlistCount() {
+            const badge = document.getElementById('wishlistCount');
+            if (!badge) return;
+            
+            fetch('/wishlist/count/')
+                .then(response => response.json())
+                .then(data => {
+                    const count = data.count || 0;
+                    badge.textContent = count;
+                    if (count === 0) {
+                        badge.style.display = 'none';
+                    } else {
+                        badge.style.display = 'inline-block';
+                    }
+                })
+                .catch(error => {
+                    console.log('Wishlist count error:', error);
                 });
         }
 
@@ -166,8 +573,76 @@
             icon.classList.toggle('fa-sun');
         }
 
+        // Search autocomplete
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        let searchTimeout;
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                
+                clearTimeout(searchTimeout);
+                
+                if (query.length < 2) {
+                    searchResults.classList.remove('show');
+                    return;
+                }
+                
+                searchTimeout = setTimeout(() => {
+                    fetch('/search/autocomplete/?q=' + encodeURIComponent(query))
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.results.length > 0) {
+                                let html = '';
+                                data.results.forEach(function(item) {
+                                    if (item.type === 'product') {
+                                        html += '<a href="' + item.url + '" class="result-item">';
+                                        if (item.image) {
+                                            html += '<img src="' + item.image + '" alt="' + item.name + '" class="result-image">';
+                                        } else {
+                                            html += '<div class="result-image" style="background:#f0f0f0;display:flex;align-items:center;justify-content:center;"><i class="fas fa-box"></i></div>';
+                                        }
+                                        html += '<div class="result-info">';
+                                        html += '<div class="result-name">' + item.name + '</div>';
+                                        html += '<div class="result-category">' + item.category + '</div>';
+                                        html += '</div>';
+                                        html += '<div class="result-price">$' + item.price + '</div>';
+                                        html += '<span class="result-type">Product</span>';
+                                        html += '</a>';
+                                    } else if (item.type === 'category') {
+                                        html += '<a href="' + item.url + '" class="result-item">';
+                                        html += '<div class="result-image" style="background:#667eea;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;"><i class="fas ' + (item.icon || 'fa-tag') + '"></i></div>';
+                                        html += '<div class="result-info">';
+                                        html += '<div class="result-name">' + item.name + '</div>';
+                                        html += '<div class="result-category">Category</div>';
+                                        html += '</div>';
+                                        html += '<span class="result-type">Category</span>';
+                                        html += '</a>';
+                                    }
+                                });
+                                html += '<a href="/products/?q=' + encodeURIComponent(query) + '" class="view-all">View all results for "' + query + '" →</a>';
+                                searchResults.innerHTML = html;
+                                searchResults.classList.add('show');
+                            } else {
+                                searchResults.innerHTML = '<div class="no-results"><i class="fas fa-search" style="font-size:24px;display:block;margin-bottom:8px;"></i>No results found for "' + query + '"</div>';
+                                searchResults.classList.add('show');
+                            }
+                        })
+                        .catch(function(error) {
+                            console.log('Search error:', error);
+                        });
+                }, 300);
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                    searchResults.classList.remove('show');
+                }
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Load dark mode
             if (localStorage.getItem('darkMode') === 'true') {
                 document.documentElement.classList.add('dark');
                 const icon = document.getElementById('darkModeIcon');
@@ -175,15 +650,15 @@
                 icon.classList.add('fa-sun');
             }
             
-            // Update cart count on page load
             updateCartCount();
+            updateWishlistCount();
             
-            // Intercept ALL add to cart links
             document.querySelectorAll('.add-to-cart, a[href*="add_to_cart"]').forEach(function(link) {
                 link.addEventListener('click', function(e) {
                     const url = this.getAttribute('href');
                     if (url && url.includes('add_to_cart')) {
                         e.preventDefault();
+                        showLoading();
                         
                         fetch(url, {
                             method: 'GET',
@@ -193,13 +668,14 @@
                         })
                         .then(response => response.json())
                         .then(data => {
+                            hideLoading();
                             if (data.success) {
                                 showToast(data.message || 'Added to cart!', 'success');
                                 updateCartCount();
                             }
                         })
                         .catch(function() {
-                            // Fallback: redirect to cart
+                            hideLoading();
                             window.location.href = url;
                         });
                     }

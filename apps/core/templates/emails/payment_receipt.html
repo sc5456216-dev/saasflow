@@ -1,0 +1,22 @@
+﻿{% extends "emails/base_email.html" %}
+{% block title %}Payment Receipt{% endblock %}
+{% block content %}
+<h2>Payment Receipt 💳</h2>
+<p>Hi {{ user.username }},</p>
+<p>Thank you for your payment. Here is your receipt:</p>
+
+<div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+    <h3 style="margin-top: 0;">Payment Details</h3>
+    <p><strong>Amount:</strong> ${{ amount }}</p>
+    <p><strong>Currency:</strong> {{ currency|upper }}</p>
+    <p><strong>Status:</strong> {{ status|title }}</p>
+    <p><strong>Payment Method:</strong> {{ payment_method|default:"Card" }}</p>
+    <p><strong>Date:</strong> {{ created_at|date:"M d, Y H:i" }}</p>
+</div>
+
+<a href="{{ site_url }}{{ billing_url }}" class="btn">View Billing History</a>
+
+<p style="margin-top: 20px; color: #666; font-size: 14px;">
+    If you have any questions about this payment, please contact our support team.
+</p>
+{% endblock %}

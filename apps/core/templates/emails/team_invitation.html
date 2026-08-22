@@ -1,0 +1,25 @@
+﻿{% extends "emails/base_email.html" %}
+{% block title %}Team Invitation{% endblock %}
+{% block content %}
+<h2>Team Invitation 👥</h2>
+<p>Hi {{ user.username }},</p>
+<p>{{ invited_by.username }} has invited you to join the team <strong>{{ team_name }}</strong> at <strong>{{ company.name }}</strong>.</p>
+
+<div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+    <h3 style="margin-top: 0;">Team Details:</h3>
+    <p><strong>Team:</strong> {{ team_name }}</p>
+    <p><strong>Company:</strong> {{ company.name }}</p>
+    <p><strong>Invited By:</strong> {{ invited_by.username }}</p>
+</div>
+
+<a href="{{ site_url }}{{ accept_url }}" class="btn">Accept Invitation</a>
+
+<p style="margin-top: 20px; color: #666; font-size: 14px;">
+    If you do not want to join this team, you can ignore this email.
+</p>
+
+<p style="margin-top: 10px;">
+    Cheers,<br>
+    <strong>The SaaSFlow Team</strong>
+</p>
+{% endblock %}

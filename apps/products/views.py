@@ -646,3 +646,71 @@ def checkout(request):
         return redirect('product_list')
     
     # ... rest of checkout function remains the same
+# Update checkout function in apps/products/views.py
+
+@login_required(login_url='/login/')
+def checkout(request):
+    # Merge session cart into user cart if user is logged in
+    if request.user.is_authenticated:
+        session_cart = request.session.get('cart', {})
+        if session_cart:
+            for product_id, quantity in session_cart.items():
+                try:
+                    product = Product.objects.get(id=int(product_id))
+                    cart_item, created = Cart.objects.get_or_create(
+                        user=request.user,
+                        product=product,
+                        defaults={'quantity': quantity}
+                    )
+                    if not created:
+                        cart_item.quantity += quantity
+                        cart_item.save()
+                except Product.DoesNotExist:
+                    pass
+            # Clear session cart
+            request.session['cart'] = {}
+    
+    cart_items = Cart.objects.filter(user=request.user)
+    
+    if not cart_items:
+        messages.error(request, 'Your cart is empty.')
+        return redirect('product_list')
+    
+    if request.method == 'POST':
+        company = Company.objects.filter(owner=request.user).first()
+        
+        total = sum(item.get_total_price() for item in cart_items)
+        order_number = f"ORD-{uuid.uuid4().hex[:8].upper()}"
+        
+        order = Order.objects.create(
+            user=request.user,
+            company=company,
+            order_number=order_number,
+            total_amount=total,
+            shipping_address=request.POST.get('shipping_address'),
+            billing_address=request.POST.get('billing_address', request.POST.get('shipping_address')),
+        )
+        
+        for item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                product=item.product,
+                quantity=item.quantity,
+                price=item.product.price,
+                subtotal=item.get_total_price()
+            )
+        
+        cart_items.delete()
+        
+        send_order_confirmation_email(order, request.user)
+        
+        messages.success(request, f'Order #{order_number} placed successfully! Check your email for confirmation.')
+        return redirect('order_confirmation', order_id=order.id)
+    
+    # GET request - show checkout page
+    total = sum(item.get_total_price() for item in cart_items)
+    context = {
+        'cart_items': cart_items,
+        'total': total,
+    }
+    return render(request, 'products/checkout.html', context)

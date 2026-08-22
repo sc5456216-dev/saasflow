@@ -1,11 +1,38 @@
 ﻿import os
 import django
+import urllib.request
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
 from apps.products.models import Product, Category
 from django.contrib.auth.models import User
+
+# Product images from Unsplash (free stock photos)
+PRODUCT_IMAGES = {
+    'premium-saas-plan': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=400&fit=crop',
+    'pro-plan': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=400&fit=crop',
+    'starter-kit': 'https://images.unsplash.com/photo-1432889821006-c6a8e5b2a4b8?w=400&h=400&fit=crop',
+    'analytics-dashboard-pro': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=400&fit=crop',
+    'cloud-storage-pro': 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=400&fit=crop',
+    'api-management-suite': 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=400&fit=crop',
+    'web-dev-bootcamp': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=400&fit=crop',
+    'design-system-templates': 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=400&fit=crop',
+    'email-marketing-pro': 'https://images.unsplash.com/photo-1526378722484-bd91ca387e72?w=400&h=400&fit=crop',
+    'security-audit-service': 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=400&fit=crop',
+}
+
+def download_image(url):
+    """Download image from URL and return a temporary file"""
+    try:
+        temp_img = NamedTemporaryFile(delete=True, suffix='.jpg')
+        urllib.request.urlretrieve(url, temp_img.name)
+        return temp_img
+    except Exception as e:
+        print(f"Error downloading image: {e}")
+        return None
 
 def add_products():
     # Create categories
@@ -27,12 +54,6 @@ def add_products():
         if created:
             print(f'✅ Category created: {category.name}')
     
-    # Get first user
-    user = User.objects.first()
-    if not user:
-        print('❌ No user found! Create a superuser first.')
-        return
-    
     # Products with real images
     products_data = [
         {
@@ -46,7 +67,8 @@ def add_products():
             'is_featured': True,
             'status': 'published',
             'is_active': True,
-            'category': categories[0]
+            'category': categories[0],
+            'image_url': PRODUCT_IMAGES.get('premium-saas-plan')
         },
         {
             'name': 'Pro Plan',
@@ -59,7 +81,8 @@ def add_products():
             'is_featured': True,
             'status': 'published',
             'is_active': True,
-            'category': categories[0]
+            'category': categories[0],
+            'image_url': PRODUCT_IMAGES.get('pro-plan')
         },
         {
             'name': 'Starter Kit',
@@ -71,7 +94,8 @@ def add_products():
             'is_featured': False,
             'status': 'published',
             'is_active': True,
-            'category': categories[0]
+            'category': categories[0],
+            'image_url': PRODUCT_IMAGES.get('starter-kit')
         },
         {
             'name': 'Analytics Dashboard Pro',
@@ -84,7 +108,8 @@ def add_products():
             'is_featured': True,
             'status': 'published',
             'is_active': True,
-            'category': categories[0]
+            'category': categories[0],
+            'image_url': PRODUCT_IMAGES.get('analytics-dashboard-pro')
         },
         {
             'name': 'Cloud Storage Pro',
@@ -97,7 +122,8 @@ def add_products():
             'is_featured': False,
             'status': 'published',
             'is_active': True,
-            'category': categories[1]
+            'category': categories[1],
+            'image_url': PRODUCT_IMAGES.get('cloud-storage-pro')
         },
         {
             'name': 'API Management Suite',
@@ -110,7 +136,8 @@ def add_products():
             'is_featured': True,
             'status': 'published',
             'is_active': True,
-            'category': categories[4]
+            'category': categories[4],
+            'image_url': PRODUCT_IMAGES.get('api-management-suite')
         },
         {
             'name': 'Web Development Bootcamp',
@@ -123,7 +150,8 @@ def add_products():
             'is_featured': True,
             'status': 'published',
             'is_active': True,
-            'category': categories[3]
+            'category': categories[3],
+            'image_url': PRODUCT_IMAGES.get('web-dev-bootcamp')
         },
         {
             'name': 'Design System Templates',
@@ -136,7 +164,8 @@ def add_products():
             'is_featured': False,
             'status': 'published',
             'is_active': True,
-            'category': categories[2]
+            'category': categories[2],
+            'image_url': PRODUCT_IMAGES.get('design-system-templates')
         },
         {
             'name': 'Email Marketing Pro',
@@ -149,7 +178,8 @@ def add_products():
             'is_featured': False,
             'status': 'published',
             'is_active': True,
-            'category': categories[0]
+            'category': categories[0],
+            'image_url': PRODUCT_IMAGES.get('email-marketing-pro')
         },
         {
             'name': 'Security Audit Service',
@@ -161,7 +191,8 @@ def add_products():
             'is_featured': False,
             'status': 'published',
             'is_active': True,
-            'category': categories[1]
+            'category': categories[1],
+            'image_url': PRODUCT_IMAGES.get('security-audit-service')
         }
     ]
     
@@ -169,11 +200,32 @@ def add_products():
     for p in products_data:
         product, created = Product.objects.get_or_create(
             slug=p['slug'],
-            defaults=p
+            defaults={
+                'name': p['name'],
+                'description': p['description'],
+                'short_description': p['short_description'],
+                'price': p['price'],
+                'compare_price': p.get('compare_price'),
+                'stock': p['stock'],
+                'is_featured': p['is_featured'],
+                'status': p['status'],
+                'is_active': p['is_active'],
+                'category': p['category']
+            }
         )
+        
         if created:
             count += 1
-            print(f'✅ Product created: {product.name}')
+            # Download and assign image
+            if p.get('image_url'):
+                temp_file = download_image(p['image_url'])
+                if temp_file:
+                    product.image.save(f"{product.slug}.jpg", File(temp_file), save=True)
+                    print(f'✅ Product created with image: {product.name}')
+                else:
+                    print(f'⚠️ Product created without image: {product.name}')
+            else:
+                print(f'✅ Product created: {product.name}')
     
     print(f'\n🎉 {count} new products added successfully!')
     print(f'📦 Total products: {Product.objects.count()}')

@@ -14,7 +14,7 @@ from django.contrib.auth.models import User
 PRODUCT_IMAGES = {
     'premium-saas-plan': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=400&fit=crop',
     'pro-plan': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=400&fit=crop',
-    'starter-kit': 'https://images.unsplash.com/photo-1432889821006-c6a8e5b2a4b8?w=400&h=400&fit=crop',
+    'starter-kit': 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=400&fit=crop',
     'analytics-dashboard-pro': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=400&fit=crop',
     'cloud-storage-pro': 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=400&fit=crop',
     'api-management-suite': 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=400&fit=crop',
@@ -22,6 +22,20 @@ PRODUCT_IMAGES = {
     'design-system-templates': 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=400&fit=crop',
     'email-marketing-pro': 'https://images.unsplash.com/photo-1526378722484-bd91ca387e72?w=400&h=400&fit=crop',
     'security-audit-service': 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=400&fit=crop',
+}
+
+# Product Icons (FontAwesome classes)
+PRODUCT_ICONS = {
+    'premium-saas-plan': 'fa-crown',
+    'pro-plan': 'fa-rocket',
+    'starter-kit': 'fa-box-open',
+    'analytics-dashboard-pro': 'fa-chart-line',
+    'cloud-storage-pro': 'fa-cloud',
+    'api-management-suite': 'fa-code',
+    'web-dev-bootcamp': 'fa-laptop-code',
+    'design-system-templates': 'fa-paint-brush',
+    'email-marketing-pro': 'fa-envelope',
+    'security-audit-service': 'fa-shield-alt',
 }
 
 def download_image(url):
@@ -35,26 +49,29 @@ def download_image(url):
         return None
 
 def add_products():
-    # Create categories
+    # Create categories with icons
     categories_data = [
-        {'name': 'Software', 'slug': 'software'},
-        {'name': 'Services', 'slug': 'services'},
-        {'name': 'Templates', 'slug': 'templates'},
-        {'name': 'Courses', 'slug': 'courses'},
-        {'name': 'Tools', 'slug': 'tools'},
+        {'name': 'Software', 'slug': 'software', 'icon': 'fa-code'},
+        {'name': 'Services', 'slug': 'services', 'icon': 'fa-cogs'},
+        {'name': 'Templates', 'slug': 'templates', 'icon': 'fa-paint-brush'},
+        {'name': 'Courses', 'slug': 'courses', 'icon': 'fa-graduation-cap'},
+        {'name': 'Tools', 'slug': 'tools', 'icon': 'fa-tools'},
     ]
     
     categories = []
     for cat in categories_data:
         category, created = Category.objects.get_or_create(
             slug=cat['slug'],
-            defaults={'name': cat['name']}
+            defaults={
+                'name': cat['name'],
+                'icon': cat['icon']
+            }
         )
         categories.append(category)
         if created:
-            print(f'✅ Category created: {category.name}')
+            print(f'✅ Category created: {category.name} with icon {category.icon}')
     
-    # Products with real images
+    # Products with real images and icons
     products_data = [
         {
             'name': 'Premium SaaS Plan',
@@ -68,7 +85,8 @@ def add_products():
             'status': 'published',
             'is_active': True,
             'category': categories[0],
-            'image_url': PRODUCT_IMAGES.get('premium-saas-plan')
+            'image_url': PRODUCT_IMAGES.get('premium-saas-plan'),
+            'icon': '👑'
         },
         {
             'name': 'Pro Plan',
@@ -82,12 +100,13 @@ def add_products():
             'status': 'published',
             'is_active': True,
             'category': categories[0],
-            'image_url': PRODUCT_IMAGES.get('pro-plan')
+            'image_url': PRODUCT_IMAGES.get('pro-plan'),
+            'icon': '🚀'
         },
         {
             'name': 'Starter Kit',
             'slug': 'starter-kit',
-            'description': 'Everything you need to get started with SaaSFlow. Includes basic features and email support.',
+            'description': 'Everything you need to get started with SaaSFlow. Includes basic features, email support, and 5 team members.',
             'short_description': 'Complete starter package',
             'price': 29.99,
             'stock': 500,
@@ -95,7 +114,8 @@ def add_products():
             'status': 'published',
             'is_active': True,
             'category': categories[0],
-            'image_url': PRODUCT_IMAGES.get('starter-kit')
+            'image_url': PRODUCT_IMAGES.get('starter-kit'),
+            'icon': '📦'
         },
         {
             'name': 'Analytics Dashboard Pro',
@@ -109,7 +129,8 @@ def add_products():
             'status': 'published',
             'is_active': True,
             'category': categories[0],
-            'image_url': PRODUCT_IMAGES.get('analytics-dashboard-pro')
+            'image_url': PRODUCT_IMAGES.get('analytics-dashboard-pro'),
+            'icon': '📊'
         },
         {
             'name': 'Cloud Storage Pro',
@@ -123,7 +144,8 @@ def add_products():
             'status': 'published',
             'is_active': True,
             'category': categories[1],
-            'image_url': PRODUCT_IMAGES.get('cloud-storage-pro')
+            'image_url': PRODUCT_IMAGES.get('cloud-storage-pro'),
+            'icon': '☁️'
         },
         {
             'name': 'API Management Suite',
@@ -137,7 +159,8 @@ def add_products():
             'status': 'published',
             'is_active': True,
             'category': categories[4],
-            'image_url': PRODUCT_IMAGES.get('api-management-suite')
+            'image_url': PRODUCT_IMAGES.get('api-management-suite'),
+            'icon': '🔌'
         },
         {
             'name': 'Web Development Bootcamp',
@@ -151,7 +174,8 @@ def add_products():
             'status': 'published',
             'is_active': True,
             'category': categories[3],
-            'image_url': PRODUCT_IMAGES.get('web-dev-bootcamp')
+            'image_url': PRODUCT_IMAGES.get('web-dev-bootcamp'),
+            'icon': '💻'
         },
         {
             'name': 'Design System Templates',
@@ -165,7 +189,8 @@ def add_products():
             'status': 'published',
             'is_active': True,
             'category': categories[2],
-            'image_url': PRODUCT_IMAGES.get('design-system-templates')
+            'image_url': PRODUCT_IMAGES.get('design-system-templates'),
+            'icon': '🎨'
         },
         {
             'name': 'Email Marketing Pro',
@@ -179,7 +204,8 @@ def add_products():
             'status': 'published',
             'is_active': True,
             'category': categories[0],
-            'image_url': PRODUCT_IMAGES.get('email-marketing-pro')
+            'image_url': PRODUCT_IMAGES.get('email-marketing-pro'),
+            'icon': '✉️'
         },
         {
             'name': 'Security Audit Service',
@@ -192,7 +218,8 @@ def add_products():
             'status': 'published',
             'is_active': True,
             'category': categories[1],
-            'image_url': PRODUCT_IMAGES.get('security-audit-service')
+            'image_url': PRODUCT_IMAGES.get('security-audit-service'),
+            'icon': '🛡️'
         }
     ]
     
@@ -221,11 +248,11 @@ def add_products():
                 temp_file = download_image(p['image_url'])
                 if temp_file:
                     product.image.save(f"{product.slug}.jpg", File(temp_file), save=True)
-                    print(f'✅ Product created with image: {product.name}')
+                    print(f'✅ Product created with image: {product.name} {p["icon"]}')
                 else:
-                    print(f'⚠️ Product created without image: {product.name}')
+                    print(f'⚠️ Product created without image: {product.name} {p["icon"]}')
             else:
-                print(f'✅ Product created: {product.name}')
+                print(f'✅ Product created: {product.name} {p["icon"]}')
     
     print(f'\n🎉 {count} new products added successfully!')
     print(f'📦 Total products: {Product.objects.count()}')

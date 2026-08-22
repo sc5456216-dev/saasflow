@@ -476,3 +476,173 @@ def add_to_cart(request, product_id):
     
     messages.success(request, f'"{product.name}" added to cart!')
     return redirect('view_cart')
+# Update add_to_cart function in apps/products/views.py
+# Remove the login check - allow guests to add to cart
+
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    
+    # Create a session-based cart for guests
+    if not request.user.is_authenticated:
+        # Get or create session cart
+        cart = request.session.get('cart', {})
+        cart[str(product_id)] = cart.get(str(product_id), 0) + 1
+        request.session['cart'] = cart
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': True,
+                'message': f'"{product.name}" added to cart!',
+                'cart_count': sum(cart.values())
+            })
+        
+        messages.success(request, f'"{product.name}" added to cart!')
+        return redirect('view_cart')
+    
+    # For logged-in users, use database cart
+    cart_item, created = Cart.objects.get_or_create(
+        user=request.user,
+        product=product,
+        defaults={'quantity': 1}
+    )
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'success': True,
+            'message': f'"{product.name}" added to cart!',
+            'cart_count': Cart.objects.filter(user=request.user).count()
+        })
+    
+    messages.success(request, f'"{product.name}" added to cart!')
+    return redirect('view_cart')
+# Update view_cart function in apps/products/views.py
+
+def view_cart(request):
+    cart_items = []
+    total = 0
+    
+    if request.user.is_authenticated:
+        # For logged-in users, use database cart
+        cart_items = Cart.objects.filter(user=request.user)
+        total = sum(item.get_total_price() for item in cart_items)
+    else:
+        # For guests, use session cart
+        session_cart = request.session.get('cart', {})
+        for product_id, quantity in session_cart.items():
+            try:
+                product = Product.objects.get(id=int(product_id))
+                cart_items.append({
+                    'product': product,
+                    'quantity': quantity,
+                    'get_total_price': product.price * quantity,
+                    'id': f'session_{product_id}'
+                })
+                total += product.price * quantity
+            except Product.DoesNotExist:
+                pass
+    
+    context = {
+        'cart_items': cart_items,
+        'total': total,
+        'is_guest': not request.user.is_authenticated,
+    }
+    return render(request, 'products/cart.html', context)
+# Update update_cart function in apps/products/views.py
+
+def update_cart(request, item_id):
+    # Check if it's a session cart item
+    if str(item_id).startswith('session_'):
+        product_id = int(str(item_id).replace('session_', ''))
+        cart = request.session.get('cart', {})
+        
+        if request.method == 'POST':
+            quantity = int(request.POST.get('quantity', 1))
+            if quantity > 0:
+                cart[str(product_id)] = quantity
+            else:
+                cart.pop(str(product_id), None)
+            request.session['cart'] = cart
+        
+        return redirect('view_cart')
+    
+    # Database cart for logged-in users
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    cart_item = get_object_or_404(Cart, id=item_id, user=request.user)
+    
+    if request.method == 'POST':
+        quantity = int(request.POST.get('quantity', 1))
+        if quantity > 0:
+            cart_item.quantity = quantity
+            cart_item.save()
+        else:
+            cart_item.delete()
+    
+    return redirect('view_cart')
+# Update remove_from_cart function in apps/products/views.py
+
+def remove_from_cart(request, item_id):
+    # Check if it's a session cart item
+    if str(item_id).startswith('session_'):
+        product_id = int(str(item_id).replace('session_', ''))
+        cart = request.session.get('cart', {})
+        cart.pop(str(product_id), None)
+        request.session['cart'] = cart
+        messages.success(request, 'Item removed from cart.')
+        return redirect('view_cart')
+    
+    # Database cart for logged-in users
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    cart_item = get_object_or_404(Cart, id=item_id, user=request.user)
+    cart_item.delete()
+    messages.success(request, 'Item removed from cart.')
+    return redirect('view_cart')
+# Update cart_count function in apps/products/views.py
+
+@login_required(login_url='/login/')
+@require_GET
+def cart_count(request):
+    """API endpoint to get cart count"""
+    if request.user.is_authenticated:
+        count = Cart.objects.filter(user=request.user).count()
+    else:
+        cart = request.session.get('cart', {})
+        count = sum(cart.values())
+    return JsonResponse({'count': count})
+# Update checkout function in apps/products/views.py
+
+@login_required(login_url='/login/')
+def checkout(request):
+    # Merge session cart into user cart if user is logged in
+    if request.user.is_authenticated:
+        session_cart = request.session.get('cart', {})
+        if session_cart:
+            for product_id, quantity in session_cart.items():
+                try:
+                    product = Product.objects.get(id=int(product_id))
+                    cart_item, created = Cart.objects.get_or_create(
+                        user=request.user,
+                        product=product,
+                        defaults={'quantity': quantity}
+                    )
+                    if not created:
+                        cart_item.quantity += quantity
+                        cart_item.save()
+                except Product.DoesNotExist:
+                    pass
+            # Clear session cart
+            request.session['cart'] = {}
+    
+    cart_items = Cart.objects.filter(user=request.user)
+    
+    if not cart_items:
+        messages.error(request, 'Your cart is empty.')
+        return redirect('product_list')
+    
+    # ... rest of checkout function remains the same

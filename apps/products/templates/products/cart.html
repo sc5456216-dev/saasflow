@@ -3,9 +3,29 @@
 <div class="container mx-auto px-4 py-8 mt-16">
     <h1 class="text-3xl font-bold dark:text-white mb-8">Shopping Cart</h1>
 
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
     {% if cart_items %}
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
             <div class="p-6">
+                <!-- Guest Notice -->
+                {% if is_guest %}
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
+                        <p class="text-blue-700 dark:text-blue-300">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            You are shopping as a guest. 
+                            <a href="{% url 'login' %}" class="font-semibold underline hover:text-blue-900 dark:hover:text-blue-100">Login</a> 
+                            or 
+                            <a href="{% url 'register' %}" class="font-semibold underline hover:text-blue-900 dark:hover:text-blue-100">Register</a> 
+                            to save your cart and place orders.
+                        </p>
+                    </div>
+                {% endif %}
+
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead class="border-b dark:border-gray-700">
@@ -29,7 +49,7 @@
                                     </td>
                                     <td class="py-4 dark:text-white">${{ item.product.price }}</td>
                                     <td class="py-4">
-                                        <form method="post" action="{% url "update_cart" item.id %}" class="flex items-center gap-2">
+                                        <form method="post" action="{% url 'update_cart' item.id %}" class="flex items-center gap-2">
                                             {% csrf_token %}
                                             <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="99" 
                                                    class="w-16 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600 text-center">
@@ -38,7 +58,7 @@
                                     </td>
                                     <td class="py-4 dark:text-white font-semibold">${{ item.get_total_price }}</td>
                                     <td class="py-4">
-                                        <a href="{% url "remove_from_cart" item.id %}" class="text-red-500 hover:text-red-700" onclick="return confirm("Remove this item?")">
+                                        <a href="{% url 'remove_from_cart' item.id %}" class="text-red-500 hover:text-red-700" onclick="return confirm('Remove this item?')">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                     </td>
@@ -55,8 +75,13 @@
                 </div>
 
                 <div class="flex flex-wrap gap-4 mt-6">
-                    <a href="{% url "product_list" %}" class="btn-secondary">Continue Shopping</a>
-                    <a href="{% url "checkout" %}" class="btn-primary">Proceed to Checkout</a>
+                    <a href="{% url 'product_list' %}" class="btn-secondary">Continue Shopping</a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'checkout' %}" class="btn-primary">Proceed to Checkout</a>
+                    {% else %}
+                        <a href="{% url 'login' %}?next={% url 'checkout' %}" class="btn-primary">Login to Checkout</a>
+                        <span class="text-sm text-gray-500 dark:text-gray-400 flex items-center">or <a href="{% url 'register' %}" class="ml-1 text-[#667eea] hover:underline">Register</a></span>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -64,7 +89,7 @@
         <div class="text-center py-12">
             <i class="fas fa-shopping-cart text-6xl text-gray-400 mb-4"></i>
             <p class="text-xl text-gray-600 dark:text-gray-400">Your cart is empty.</p>
-            <a href="{% url "product_list" %}" class="btn-primary inline-block mt-4">Start Shopping</a>
+            <a href="{% url 'product_list' %}" class="btn-primary inline-block mt-4">Start Shopping</a>
         </div>
     {% endif %}
 </div>
@@ -82,5 +107,9 @@
     .btn-secondary:hover {
         background: #5a6268;
     }
+    .alert { padding: 12px; border-radius: 8px; margin-bottom: 20px; }
+    .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
 </style>
 {% endblock %}

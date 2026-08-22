@@ -422,3 +422,57 @@ def search_autocomplete(request):
             })
     
     return JsonResponse({'results': results, 'query': query})
+# Update add_to_cart function - remove @login_required
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    
+    # If user is not logged in, redirect to login with next parameter
+    if not request.user.is_authenticated:
+        messages.info(request, 'Please login to add items to your cart.')
+        return redirect(f'/login/?next={request.path}')
+    
+    cart_item, created = Cart.objects.get_or_create(
+        user=request.user,
+        product=product,
+        defaults={'quantity': 1}
+    )
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'success': True,
+            'message': f'"{product.name}" added to cart!',
+            'cart_count': Cart.objects.filter(user=request.user).count()
+        })
+    
+    messages.success(request, f'"{product.name}" added to cart!')
+    return redirect('view_cart')
+# Update add_to_cart function in apps/products/views.py
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    
+    # If user is not logged in, redirect to login
+    if not request.user.is_authenticated:
+        messages.info(request, 'Please login to add items to your cart.')
+        return redirect(f'/login/?next={request.path}')
+    
+    cart_item, created = Cart.objects.get_or_create(
+        user=request.user,
+        product=product,
+        defaults={'quantity': 1}
+    )
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'success': True,
+            'message': f'"{product.name}" added to cart!',
+            'cart_count': Cart.objects.filter(user=request.user).count()
+        })
+    
+    messages.success(request, f'"{product.name}" added to cart!')
+    return redirect('view_cart')

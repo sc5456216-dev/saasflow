@@ -687,3 +687,8 @@
     {% block extra_js %}{% endblock %}
 </body>
 </html>
+# Update cart count in base.html - remove login check
+<a href="{% url 'view_cart' %}" class="text-gray-600 hover:text-[#667eea] transition dark:text-gray-300 cart-link">
+    <i class="fas fa-shopping-cart text-lg"></i>
+    <span class="cart-badge" id="cartCount">0</span>
+</a>

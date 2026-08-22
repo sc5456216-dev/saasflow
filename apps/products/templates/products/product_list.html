@@ -3,20 +3,9 @@
 <div class="container mx-auto px-4 py-8 mt-16">
     <div class="flex justify-between items-center mb-8">
         <h1 class="text-3xl font-bold dark:text-white">Shop</h1>
-        {% if user.is_authenticated %}
-            <a href="{% url 'view_cart' %}" class="btn-primary flex items-center">
-                <i class="fas fa-shopping-cart mr-2"></i> View Cart
-            </a>
-        {% else %}
-            <div class="flex gap-3">
-                <a href="{% url 'login' %}" class="btn-primary flex items-center">
-                    <i class="fas fa-sign-in-alt mr-2"></i> Login to Shop
-                </a>
-                <a href="{% url 'register' %}" class="btn-secondary flex items-center">
-                    <i class="fas fa-user-plus mr-2"></i> Register
-                </a>
-            </div>
-        {% endif %}
+        <a href="{% url 'view_cart' %}" class="btn-primary flex items-center">
+            <i class="fas fa-shopping-cart mr-2"></i> View Cart
+        </a>
     </div>
 
     <!-- Guest Notice -->
@@ -28,7 +17,7 @@
                 <a href="{% url 'login' %}" class="font-semibold underline hover:text-blue-900 dark:hover:text-blue-100">Login</a> 
                 or 
                 <a href="{% url 'register' %}" class="font-semibold underline hover:text-blue-900 dark:hover:text-blue-100">Register</a> 
-                to add items to cart and checkout.
+                to checkout and manage orders.
             </p>
         </div>
     {% endif %}
@@ -99,15 +88,9 @@
                                 {% endif %}
                             </span>
                             {% if product.is_in_stock %}
-                                {% if user.is_authenticated %}
-                                    <a href="{% url 'add_to_cart' product.id %}" class="add-to-cart btn-primary text-sm px-4 py-2 inline-block text-center">
-                                        <i class="fas fa-cart-plus mr-1"></i> Add
-                                    </a>
-                                {% else %}
-                                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn-primary text-sm px-4 py-2 inline-block text-center">
-                                        <i class="fas fa-sign-in-alt mr-1"></i> Login to Buy
-                                    </a>
-                                {% endif %}
+                                <a href="{% url 'add_to_cart' product.id %}" class="add-to-cart btn-primary text-sm px-4 py-2 inline-block text-center">
+                                    <i class="fas fa-cart-plus mr-1"></i> Add to Cart
+                                </a>
                             {% else %}
                                 <button disabled class="bg-gray-400 text-white px-4 py-2 rounded-lg text-sm cursor-not-allowed">Out of Stock</button>
                             {% endif %}

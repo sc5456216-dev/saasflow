@@ -3,7 +3,8 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
-from django.views.generic import RedirectView
+from django.views.generic import RedirectView, TemplateView
+from django.views.generic.base import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -14,7 +15,7 @@ urlpatterns = [
     path('', include('apps.teams.urls')),
     path('', include('apps.payments.urls')),
     path('', include('apps.activity.urls')),
-    path('', include('apps.products.urls')),  # Products app URLs
+    path('', include('apps.products.urls')),
     
     path('accounts/login/', RedirectView.as_view(url='/login/', permanent=True)),
     
@@ -40,16 +41,12 @@ urlpatterns = [
              template_name='registration/password_reset_complete.html'
          ),
          name='password_reset_complete'),
+    
+    # Privacy and Terms pages
+    path('privacy/', TemplateView.as_view(template_name='privacy.html'), name='privacy'),
+    path('terms/', TemplateView.as_view(template_name='terms.html'), name='terms'),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-# Add this to config/urls.py
-from apps.core.views import newsletter_subscribe
-
-# Add this to urlpatterns
-path('newsletter/subscribe/', newsletter_subscribe, name='newsletter_subscribe'),
-# Add to config/urls.py urlpatterns
-path('privacy/', TemplateView.as_view(template_name='privacy.html'), name='privacy'),
-path('terms/', TemplateView.as_view(template_name='terms.html'), name='terms'),

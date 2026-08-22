@@ -2,6 +2,6 @@
 djangorestframework
 django-cors-headers
 python-dotenv
-psycopg2-binary
 Pillow>=10.0.0
 stripe>=7.0.0
+whitenoise>=6.0.0

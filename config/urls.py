@@ -45,3 +45,8 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# Add this to config/urls.py
+from apps.core.views import newsletter_subscribe
+
+# Add this to urlpatterns
+path('newsletter/subscribe/', newsletter_subscribe, name='newsletter_subscribe'),

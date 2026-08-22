@@ -1,0 +1,100 @@
+﻿<!-- Add to base.html just before the closing </head> tag -->
+<style>
+    /* Mobile Menu Styles */
+    .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #555;
+    }
+    .mobile-menu {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: white;
+        z-index: 999;
+        padding: 80px 20px 20px;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+    .mobile-menu.open {
+        display: flex;
+    }
+    .mobile-menu a {
+        color: #333;
+        text-decoration: none;
+        font-size: 20px;
+        padding: 10px;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+    }
+    .mobile-menu .close-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+    }
+    
+    .dark .mobile-menu {
+        background: #1a1a2e;
+    }
+    .dark .mobile-menu a {
+        color: #e0e0e0;
+        border-bottom-color: #2d2d44;
+    }
+    .dark .mobile-menu-btn {
+        color: #a0aec0;
+    }
+    
+    @media (max-width: 768px) {
+        .mobile-menu-btn {
+            display: block;
+        }
+        .desktop-nav {
+            display: none !important;
+        }
+        .search-input {
+            width: 100px !important;
+        }
+        .search-input:focus {
+            width: 140px !important;
+        }
+    }
+</style>
+
+<!-- Mobile Menu HTML (add after the nav) -->
+<div class="mobile-menu" id="mobileMenu">
+    <button class="close-btn" onclick="toggleMobileMenu()">✕</button>
+    <a href="/">Home</a>
+    <a href="{% url 'product_list' %}">Shop</a>
+    <a href="{% url 'wishlist' %}">Wishlist</a>
+    <a href="{% url 'view_cart' %}">Cart</a>
+    <a href="{% url 'track_order' %}">Track Order</a>
+    {% if user.is_authenticated %}
+        <a href="/dashboard/">Dashboard</a>
+        <a href="/profile/">Profile</a>
+        <a href="/teams/">Teams</a>
+        <a href="/logout/">Logout</a>
+    {% else %}
+        <a href="/login/">Login</a>
+        <a href="/register/">Register</a>
+    {% endif %}
+</div>
+
+<script>
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobileMenu');
+        menu.classList.toggle('open');
+        document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : 'auto';
+    }
+</script>

@@ -1,0 +1,59 @@
+﻿<!-- Quick View Modal -->
+<div id="quickViewModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 relative">
+        <button onclick="closeQuickView()" class="absolute top-4 right-4 text-2xl hover:text-red-500 transition">
+            <i class="fas fa-times"></i>
+        </button>
+        <div id="quickViewContent">
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="md:w-1/2">
+                    <img id="quickViewImage" src="" alt="" class="w-full rounded-lg object-cover h-64">
+                </div>
+                <div class="md:w-1/2">
+                    <h2 id="quickViewName" class="text-2xl font-bold dark:text-white"></h2>
+                    <p id="quickViewPrice" class="text-2xl font-bold text-[#667eea] mt-2"></p>
+                    <p id="quickViewDescription" class="text-gray-600 dark:text-gray-400 mt-4"></p>
+                    <div id="quickViewStock" class="mt-4"></div>
+                    <a id="quickViewLink" href="#" class="btn-primary mt-6 inline-block">View Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openQuickView(productId) {
+    const modal = document.getElementById('quickViewModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+    
+    fetch(`/api/product/${productId}/`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('quickViewImage').src = data.image || '/static/images/placeholder.png';
+            document.getElementById('quickViewName').textContent = data.name;
+            document.getElementById('quickViewPrice').textContent = `$${data.price}`;
+            document.getElementById('quickViewDescription').textContent = data.description || '';
+            document.getElementById('quickViewLink').href = `/products/${data.slug}/`;
+            document.getElementById('quickViewStock').innerHTML = data.stock > 0 ? 
+                '<span class="text-green-500">✅ In Stock</span>' : 
+                '<span class="text-red-500">❌ Out of Stock</span>';
+        })
+        .catch(() => {
+            alert('Error loading product details');
+        });
+}
+
+function closeQuickView() {
+    const modal = document.getElementById('quickViewModal');
+    modal.classList.remove('flex');
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+// Close on outside click
+document.getElementById('quickViewModal').addEventListener('click', function(e) {
+    if (e.target === this) closeQuickView();
+});
+</script>

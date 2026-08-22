@@ -1,0 +1,60 @@
+﻿<!-- Newsletter Section -->
+<div class="bg-gradient-to-r from-[#667eea] to-[#764ba2] py-12 mt-8">
+    <div class="container mx-auto px-4 text-center">
+        <h3 class="text-2xl font-bold text-white mb-2">Subscribe to our Newsletter</h3>
+        <p class="text-white/80 mb-6">Get the latest updates on products and offers</p>
+        <form id="newsletterForm" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <input type="email" id="newsletterEmail" placeholder="Enter your email" required 
+                   class="flex-1 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50">
+            <button type="submit" class="bg-white text-[#667eea] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+                Subscribe
+            </button>
+        </form>
+        <div id="newsletterMessage" class="text-white mt-4"></div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const newsletterForm = document.getElementById('newsletterForm');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('newsletterEmail').value;
+            const message = document.getElementById('newsletterMessage');
+            message.textContent = 'Subscribing...';
+            
+            fetch('/newsletter/subscribe/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: 'email=' + encodeURIComponent(email)
+            })
+            .then(response => response.json())
+            .then(data => {
+                message.textContent = data.message;
+                message.className = data.success ? 'text-green-300' : 'text-red-300';
+                if (data.success) {
+                    document.getElementById('newsletterEmail').value = '';
+                }
+            })
+            .catch(function() {
+                message.textContent = 'Error subscribing. Please try again.';
+                message.className = 'text-red-300';
+            });
+        });
+    }
+});
+
+function getCSRFToken() {
+    const cookies = document.cookie.split('; ');
+    for (let cookie of cookies) {
+        if (cookie.startsWith('csrftoken=')) {
+            return cookie.split('=')[1];
+        }
+    }
+    return '';
+}
+</script>

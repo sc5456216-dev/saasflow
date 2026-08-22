@@ -161,3 +161,36 @@ def subscribe(request, plan_id):
     except Exception as e:
         messages.error(request, f'Error: {str(e)}')
         return redirect('plans')
+# Add to apps/dashboard/views.py
+from apps.products.models import Order, Wishlist, Product
+from apps.core.models import Company, Subscription
+
+@login_required(login_url='/login/')
+def dashboard_stats(request):
+    """Get user statistics for dashboard"""
+    user = request.user
+    
+    # Order statistics
+    orders = Order.objects.filter(user=user)
+    order_count = orders.count()
+    total_spent = orders.aggregate(total=models.Sum('total_amount'))['total'] or 0
+    
+    # Wishlist count
+    wishlist_count = Wishlist.objects.filter(user=user).count()
+    
+    # Company info
+    company = Company.objects.filter(owner=user).first()
+    subscription = Subscription.objects.filter(company=company, status='active').first() if company else None
+    
+    # Recently viewed products
+    recently_viewed = RecentlyViewed.objects.filter(user=user).select_related('product')[:5]
+    
+    context = {
+        'order_count': order_count,
+        'total_spent': total_spent,
+        'wishlist_count': wishlist_count,
+        'company': company,
+        'subscription': subscription,
+        'recently_viewed': recently_viewed,
+    }
+    return JsonResponse(context)
